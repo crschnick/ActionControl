@@ -1,6 +1,20 @@
 package org.monospark.actionpermissions.kind;
 
-public interface ObjectKind {
+public abstract class ObjectKind {
+
+	private int variant;
+
+	protected ObjectKind(int variant) {
+		this.variant = variant;
+	}
+
+	public final String getName() {
+		return getBaseName() + (variant != 0 ? variant : "");
+	}
 	
-	String getName();
+	protected abstract String getBaseName();
+
+	public final int getVariant() {
+		return variant;
+	}
 }

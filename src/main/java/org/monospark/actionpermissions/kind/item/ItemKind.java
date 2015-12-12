@@ -2,9 +2,8 @@ package org.monospark.actionpermissions.kind.item;
 
 import org.monospark.actionpermissions.kind.ObjectKind;
 import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.inventory.ItemStack;
 
-public abstract class ItemKind implements ObjectKind {
+public final class ItemKind extends ObjectKind {
 
 	private static final ItemKindRegistry registry = new ItemKindRegistry();
 
@@ -14,12 +13,16 @@ public abstract class ItemKind implements ObjectKind {
 	
 	private ItemType type;
 	
-	ItemKind(ItemType type) {
+	ItemKind(ItemType type, int variant) {
+		super(variant);
 		this.type = type;
 	}
-	
-	public abstract boolean matchesItemStack(ItemStack stack);
 
+	@Override
+	protected String getBaseName() {
+		return type.getName();
+	}
+	
 	public ItemType getItemType() {
 		return type;
 	}

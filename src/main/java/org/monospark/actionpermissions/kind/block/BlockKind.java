@@ -1,33 +1,29 @@
 package org.monospark.actionpermissions.kind.block;
 
 import org.monospark.actionpermissions.kind.ObjectKind;
-import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 
-public class BlockKind implements ObjectKind {
+public final class BlockKind extends ObjectKind {
 	
 	private static final BlockKindRegistry registry = new BlockKindRegistry();
 
 	public static BlockKindRegistry getRegistry() {
 		return registry;
 	}
-
+	
 	private BlockType type;
-
-	BlockKind(BlockType type) {
+	
+	BlockKind(BlockType type, int variant) {
+		super(variant);
 		this.type = type;
 	}
-	
-	public boolean matchesState(BlockState state) {
-		return state.getType() == getBlockType();
+
+	public BlockType getBlockType() {
+		return this.type;
 	}
 
 	@Override
-	public String getName() {
-		return type.getName();
-	}
-	
-	public BlockType getBlockType() {
-		return this.type;
+	protected String getBaseName() {
+		return this.type.getName();
 	}
 }

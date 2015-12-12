@@ -5,18 +5,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import org.monospark.actionpermissions.kind.ObjectKindRegistry;
 import org.spongepowered.api.CatalogTypes;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 
-public final class ItemKindRegistry {
+public final class ItemKindRegistry extends ObjectKindRegistry<ItemKind, ItemKindMatcher> {
 
-	private static final Pattern ITEM_KIND_PATTERN = Pattern.compile("(\\w+?:\\w+?)(?::(\\d+))?");
-	
 	private static final Map<ItemType, int[]> VANILLA_ITEM_VARIANTS = getVanillaItemVariants();
 	
 	private static Map<ItemType, int[]> getVanillaItemVariants() {
@@ -33,60 +30,79 @@ public final class ItemKindRegistry {
 		return variants;
 	}
 	
+	private final Set<String> vanillaNames = new HashSet<String>();
+	
 	private final Set<ItemKind> allKinds = new HashSet<ItemKind>();
 
 	ItemKindRegistry() {}
 	
-	public void initRegistry() {
+	protected void init() {
 		for(ItemType type : Sponge.getRegistry().getAllOf(CatalogTypes.ITEM_TYPE)) {
 			if(type.getBlock().isPresent()) {
 				continue;
 			}
 			
-			Set<ItemKindVariant> variants = new HashSet<ItemKindVariant>();
-			variants.add(new ItemKindVariant(type, 0));
 			if(VANILLA_ITEM_VARIANTS.containsKey(type)) {
+				vanillaNames.add(type.getName());
+				allKinds.add(new ItemKind(type, 0));
 				for(int variantNumber : VANILLA_ITEM_VARIANTS.get(type)) {
-					variants.add(new ItemKindVariant(type, variantNumber));
+					allKinds.add(new ItemKind(type, variantNumber));
 				}
+			} else {
+				allKinds.add(new ItemKind(type, 0));
+			}
+		}
+	}
+
+	@Override
+	protected Optional<ItemKind> getKind(String baseName, int variant) {
+		if(isVanillaItem(baseName)) {
+			return getItemKind(baseName, variant);
+		} else {
+			Optional<ItemKind> kind = getItemKind(baseName, variant);
+			if(kind.isPresent()) {
+				return kind;
 			}
 			
-			ItemKindVariantAmount variantAmount = new ItemKindVariantAmount(type, variants);
-			allKinds.add(variantAmount);
+			Optional<ItemType> type = getItemTypeByName(baseName);
+			if(!type.isPresent()) {
+				return Optional.empty();
+			}
+			ItemKind newKind = new ItemKind(type.get(), variant);
+			allKinds.add(newKind);
+			return Optional.of(newKind);
 		}
 	}
 	
-	public Optional<ItemKind> getItemKind(String name) {
-		Matcher matcher = ITEM_KIND_PATTERN.matcher(name);
-		if (!matcher.matches()) {
-			return Optional.empty();
-		}
-		
-		String itemTypeName = matcher.group(1);
-		ItemKind matchedKind = null;
-		for (ItemKind kind : allKinds) {
-			if (kind.getItemType().getName().equals(itemTypeName)) {
-				matchedKind = kind;
-				break;
+	private boolean isVanillaItem(String baseName) {
+		for(String vanillaName : vanillaNames) {
+			if(vanillaName.equals(baseName)) {
+				return true;
+			}
+		}	
+		return false;
+	}
+	
+	private Optional<ItemKind> getItemKind(String baseName, int variant) {
+		for(ItemKind kind : allKinds) {
+			if(kind.getBaseName().equals(baseName) && kind.getVariant() == variant) {
+				return Optional.of(kind);
 			}
 		}
-		if (matchedKind == null) {
-			return Optional.empty();
-		}
-		
-		if (matcher.groupCount() == 3) {
-			int variantNumber = Integer.parseInt(matcher.group(2));
-			for(ItemKindVariant variant : ((ItemKindVariantAmount) matchedKind).getVariants()) {
-				if(variant.getVariantNumber() == variantNumber) {
-					return Optional.of(variant);
-				}
+		return Optional.empty();
+	}
+	
+	private Optional<ItemType> getItemTypeByName(String name) {
+		for(ItemType type : Sponge.getRegistry().getAllOf(CatalogTypes.ITEM_TYPE)) {
+			if(type.getName().equals(name)) {
+				return Optional.of(type);
 			}
-			
-			ItemKindVariant kindVariant = new ItemKindVariant(matchedKind.getItemType(), variantNumber);
-			((ItemKindVariantAmount) matchedKind).addVariant(kindVariant);
-			return Optional.of(kindVariant);
-		} else {
-			return Optional.of(matchedKind);
 		}
+		return Optional.empty();
+	}
+
+	@Override
+	protected ItemKindMatcher createMatcher(Set<ItemKind> kinds) {
+		return new ItemKindMatcher(kinds);
 	}
 }
