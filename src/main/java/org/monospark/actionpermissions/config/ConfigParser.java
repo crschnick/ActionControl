@@ -17,6 +17,7 @@ import org.monospark.actionpermissions.group.Group;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 
 public final class ConfigParser {
 
@@ -36,7 +37,12 @@ public final class ConfigParser {
 	
 	public static Set<Group> parseConfig(Path configFile) throws IOException, ConfigParseException {
 		String contents = new String(Files.readAllBytes(configFile));
-		Config config = GSON.fromJson(contents, Config.class);
+		Config config = null;
+		try {
+			GSON.fromJson(contents, Config.class);
+		} catch (JsonParseException e) {
+			throw new ConfigParseException(e);
+		}
 		return createGroups(config);
 	}
 
