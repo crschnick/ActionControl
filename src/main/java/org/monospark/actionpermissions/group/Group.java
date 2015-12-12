@@ -2,8 +2,8 @@ package org.monospark.actionpermissions.group;
 
 import java.util.Map;
 
-import org.monospark.actionpermissions.ActionHandler;
-import org.monospark.actionpermissions.ActionSettings;
+import org.monospark.actionpermissions.handler.ActionHandler;
+import org.monospark.actionpermissions.handler.ActionSettings;
 
 public final class Group {
 	

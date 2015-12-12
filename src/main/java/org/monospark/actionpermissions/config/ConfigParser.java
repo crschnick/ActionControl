@@ -10,9 +10,9 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
-import org.monospark.actionpermissions.ActionHandler;
-import org.monospark.actionpermissions.ActionSettings;
 import org.monospark.actionpermissions.group.Group;
+import org.monospark.actionpermissions.handler.ActionHandler;
+import org.monospark.actionpermissions.handler.ActionSettings;
 
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;

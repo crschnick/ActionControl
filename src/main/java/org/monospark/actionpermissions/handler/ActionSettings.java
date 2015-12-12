@@ -1,4 +1,4 @@
-package org.monospark.actionpermissions;
+package org.monospark.actionpermissions.handler;
 
 public abstract class ActionSettings {
 

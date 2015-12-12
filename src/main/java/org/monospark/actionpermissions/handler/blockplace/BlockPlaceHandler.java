@@ -1,9 +1,9 @@
-package org.monospark.actionpermissions.place;
+package org.monospark.actionpermissions.handler.blockplace;
 
 import java.util.Optional;
 
-import org.monospark.actionpermissions.ActionHandler;
 import org.monospark.actionpermissions.group.Group;
+import org.monospark.actionpermissions.handler.ActionHandler;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.ChangeBlockEvent.Place;
@@ -11,7 +11,7 @@ import org.spongepowered.api.event.block.ChangeBlockEvent.Place;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonDeserializer;
 
-public class BlockPlaceHandler extends ActionHandler<ChangeBlockEvent.Place, BlockPlaceSettings> {
+public final class BlockPlaceHandler extends ActionHandler<ChangeBlockEvent.Place, BlockPlaceSettings> {
 
 	public BlockPlaceHandler() {
 		super("placeBlock", BlockPlaceSettings.class, ChangeBlockEvent.Place.class);

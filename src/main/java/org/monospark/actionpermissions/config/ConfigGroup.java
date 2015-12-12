@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.monospark.actionpermissions.ActionHandler;
-import org.monospark.actionpermissions.ActionSettings;
+import org.monospark.actionpermissions.handler.ActionHandler;
+import org.monospark.actionpermissions.handler.ActionSettings;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

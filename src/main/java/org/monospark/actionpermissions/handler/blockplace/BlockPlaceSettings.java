@@ -1,12 +1,12 @@
-package org.monospark.actionpermissions.place;
+package org.monospark.actionpermissions.handler.blockplace;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.monospark.actionpermissions.ActionResponse;
-import org.monospark.actionpermissions.ActionSettings;
+import org.monospark.actionpermissions.handler.ActionResponse;
+import org.monospark.actionpermissions.handler.ActionSettings;
 import org.monospark.actionpermissions.kind.block.BlockKind;
 import org.monospark.actionpermissions.kind.block.BlockKindMatcher;
 import org.spongepowered.api.block.BlockState;

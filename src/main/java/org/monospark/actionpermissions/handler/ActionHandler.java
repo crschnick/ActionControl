@@ -1,10 +1,10 @@
-package org.monospark.actionpermissions;
+package org.monospark.actionpermissions.handler;
 
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.monospark.actionpermissions.place.BlockPlaceHandler;
+import org.monospark.actionpermissions.handler.blockplace.BlockPlaceHandler;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.EventListener;
 

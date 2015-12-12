@@ -1,4 +1,4 @@
-package org.monospark.actionpermissions;
+package org.monospark.actionpermissions.handler;
 
 import com.google.gson.annotations.SerializedName;
 
