@@ -15,7 +15,14 @@ import org.monospark.actionpermissions.kind.item.ItemKindMatcher;
 
 public abstract class ObjectKindRegistry<K extends ObjectKind, M extends ObjectMatcher> {
 
-	private static final Pattern KIND_NAME_PATTERN = Pattern.compile("((\\w+:)?(\\w+))(:(\\d+)(-\\d+)?)?");
+	private static final Pattern KIND_NAME_PATTERN = Pattern.compile("((\\w+:)?[a-zA-Z]\\w+)(:(\\d+)(-(\\d+))?)?");
+	
+	private static final int NAME = 1;
+	private static final int MOD_PREFIX = 2;
+	private static final int VARIANT_DATA = 3;
+	private static final int DATA_VALUE = 4;
+	private static final int DATA_RANGE_ADDITION = 5;
+	private static final int DATA_RANGE_END = 6;
 	
 	public static Optional< ? extends ObjectMatcher> getObjectKindMatcher(String name) {
 		Optional<BlockKindMatcher> blockMatcher = BlockKind.getRegistry().get(name);
@@ -41,8 +48,12 @@ public abstract class ObjectKindRegistry<K extends ObjectKind, M extends ObjectM
 			this.init = true;
 		}
 		
-		String formattedName = format(name);
-		Optional<Set<K>> kinds = getContainedKinds(formattedName);
+		Optional<String> formattedName = format(name);
+		if(!formattedName.isPresent()) {
+			return Optional.empty();
+		}
+		
+		Optional<Set<K>> kinds = getContainedKinds(formattedName.get());
 		if(!kinds.isPresent()) {
 			return Optional.empty();
 		}
@@ -50,34 +61,37 @@ public abstract class ObjectKindRegistry<K extends ObjectKind, M extends ObjectM
 		return Optional.of(createMatcher(kinds.get()));
 	}
 	
-	private String format(String name) {
+	private Optional<String> format(String name) {
 		Matcher matcher = KIND_NAME_PATTERN.matcher(name);
+		if(!matcher.matches()) {
+			return Optional.empty();
+		}
 		String correctName = name;
 		
-		boolean hasModPrefix = matcher.group(2) != null;
+		boolean hasModPrefix = matcher.group(MOD_PREFIX) != null;
 		if(!hasModPrefix) {
 			correctName = "minecraft:" + correctName;
 		}
 		
-		boolean hasVariant = matcher.group(4) != null;
+		boolean hasVariant = matcher.group(VARIANT_DATA) != null;
 		if(!hasVariant) {
 			correctName = correctName + ":0";
 		}
 		
-		return correctName;
+		return Optional.of(correctName);
 	}
 	
 	private Optional<Set<K>> getContainedKinds(String name) {
 		Matcher matcher = KIND_NAME_PATTERN.matcher(name);
-		boolean isRange = matcher.group(5) != null;
+		matcher.matches();
+		boolean isRange = matcher.group(DATA_RANGE_ADDITION) != null;
 		if(isRange) {
-			String[] split = matcher.group(4).split("-");
-			int start = Integer.valueOf(split[0]);
-			int end = Integer.valueOf(split[1]);
+			int start = Integer.valueOf(matcher.group(DATA_VALUE));
+			int end = Integer.valueOf(matcher.group(DATA_RANGE_END));
 			
 			Set<K> variants = new HashSet<K>();
 			for (int i = start; i < end; i++) {
-				Optional<K> kind = getKind(matcher.group(1), i);
+				Optional<K> kind = getKind(matcher.group(NAME), i);
 				if(!kind.isPresent()) {
 					return Optional.empty();
 				}
@@ -86,7 +100,7 @@ public abstract class ObjectKindRegistry<K extends ObjectKind, M extends ObjectM
 			}
 			return Optional.of(variants);
 		} else {
-			Optional<K> kind = getKind(matcher.group(1), Integer.parseInt(matcher.group(4)));
+			Optional<K> kind = getKind(matcher.group(NAME), Integer.parseInt(matcher.group(DATA_VALUE)));
 			if(!kind.isPresent()) {
 				return Optional.empty();
 			}
