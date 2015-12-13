@@ -64,9 +64,9 @@ publishing {
                 asNode().children().last() + {
                     resolveStrategy = Closure.DELEGATE_FIRST
                     packaging 'jar'
-                    name 'ActionPermissions'
+                    name 'ActionControl'
                     description '<TODO>'
-                    url 'https://monospark.org/projects/sponge/actionpermissions'
+                    url 'https://monospark.org/projects/sponge/actioncontrol'
                     inceptionYear '2015'
                 }
             }
