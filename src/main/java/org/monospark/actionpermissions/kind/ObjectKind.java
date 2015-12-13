@@ -9,7 +9,7 @@ public abstract class ObjectKind {
 	}
 
 	public final String getName() {
-		return getBaseName() + (variant != 0 ? variant : "");
+		return getBaseName() + ":" + (variant != 0 ? variant : "");
 	}
 	
 	protected abstract String getBaseName();
