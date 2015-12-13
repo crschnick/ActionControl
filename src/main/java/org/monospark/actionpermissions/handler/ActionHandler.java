@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import org.monospark.actionpermissions.handler.blockbreak.BlockBreakHandler;
 import org.monospark.actionpermissions.handler.blockplace.BlockPlaceHandler;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.EventListener;
@@ -26,6 +27,7 @@ public abstract class ActionHandler<T extends Event, S extends ActionSettings> i
 	private static final Set<ActionHandler<?,?>> createAllActionHandlers() {
 		Set<ActionHandler<?,?>> handlers = new HashSet<ActionHandler<?,?>>();
 		handlers.add(new BlockPlaceHandler());
+		handlers.add(new BlockBreakHandler());
 //		handlers.add(new CraftHandler());
 		return handlers;
 	}

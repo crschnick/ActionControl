@@ -39,7 +39,7 @@ public final class ConfigParser {
 		String contents = new String(Files.readAllBytes(configFile));
 		Config config = null;
 		try {
-			GSON.fromJson(contents, Config.class);
+			config = GSON.fromJson(contents, Config.class);
 		} catch (JsonParseException e) {
 			throw new ConfigParseException(e);
 		}
@@ -114,21 +114,30 @@ public final class ConfigParser {
 	private static Group uniteGroups(String name, ConfigGroup child, Group parent) throws ConfigParseException {
 		Map<ActionHandler<?, ?>, ActionSettings> unitedSettings = Maps.newHashMap();
 		for(ActionHandler<?, ?> handler : ActionHandler.ALL) {
-			ActionSettings united = uniteSettings(handler, name, child, parent);
-			unitedSettings.put(handler, united);
+			Optional<? extends ActionSettings> united = uniteSettings(handler, name, child, parent);
+			if(united.isPresent()) {
+				unitedSettings.put(handler, united.get());
+			}
 		}
 		return new Group(name, unitedSettings);
 	}
 	
-	private static <T extends ActionSettings> T uniteSettings(ActionHandler<?, T> handler, String name,
+	private static <T extends ActionSettings> Optional<T> uniteSettings(ActionHandler<?, T> handler, String name,
 			ConfigGroup child, Group parent) throws ConfigParseException {
-		T parentSettings = parent.getActionSettings(handler);
+		Optional<T> parentSettings = parent.getActionSettings(handler);
 		@SuppressWarnings("unchecked")
 		T childSettings = (T) child.getSettings().get(handler);
-		if(parentSettings.getResponse() != childSettings.getResponse()) {
+		if(!parentSettings.isPresent()) {
+			return Optional.ofNullable(childSettings);
+		}
+		if(childSettings == null) {
+			return Optional.of(parentSettings.get());
+		}
+		
+		if(parentSettings.get().getResponse() != childSettings.getResponse()) {
 			throw new ConfigParseException("name can't inherit the " + handler.getName() +
 					" settings, since their types are different");
 		}
-		return handler.uniteSettings(parentSettings, childSettings);
+		return Optional.of(handler.uniteSettings(parentSettings.get(), childSettings));
 	}
 }

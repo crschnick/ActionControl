@@ -1,6 +1,7 @@
 package org.monospark.actionpermissions.group;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.monospark.actionpermissions.handler.ActionHandler;
 import org.monospark.actionpermissions.handler.ActionSettings;
@@ -27,7 +28,7 @@ public final class Group {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <S extends ActionSettings> S getActionSettings(ActionHandler<?, S> handler) {
-		return (S) handlers.get(handler);
+	public <S extends ActionSettings> Optional<S> getActionSettings(ActionHandler<?, S> handler) {
+		return Optional.ofNullable((S) handlers.get(handler));
 	}
 }

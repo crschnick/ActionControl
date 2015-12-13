@@ -20,16 +20,24 @@ public final class BlockPlaceHandler extends ActionHandler<ChangeBlockEvent.Plac
 	@Override
 	public void handle(Place event) throws Exception {
 		Optional<Player> player = event.getCause().first(Player.class);
-		if(player.isPresent()) {
-			Optional<Group> playerGroup = Group.getRegistry().getGroup(player.get());
-			if(playerGroup.isPresent()) {
-				Group group = playerGroup.get();
-				BlockPlaceSettings settings = group.getActionSettings(this);
-				boolean allowed = settings.canPlace(event.getTransactions().get(0).getFinal().getState());
-				if(!allowed) {
-					event.setCancelled(true);
-				}
-			}
+		if(!player.isPresent()) {
+			return;
+		}
+
+		Optional<Group> playerGroup = Group.getRegistry().getGroup(player.get());
+		if(!playerGroup.isPresent()) {
+			return;
+		}
+		
+		Group group = playerGroup.get();
+		Optional<BlockPlaceSettings> settings = group.getActionSettings(this);
+		if(!settings.isPresent()) {
+			return;
+		}
+		
+		boolean allowed = settings.get().canPlace(event.getTransactions().get(0).getFinal().getState());
+		if(!allowed) {
+			event.setCancelled(true);
 		}
 	}
 
