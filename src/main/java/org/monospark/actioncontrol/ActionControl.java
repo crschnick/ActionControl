@@ -14,7 +14,7 @@ import org.spongepowered.api.plugin.Plugin;
 
 import com.google.inject.Inject;
 
-@Plugin(id = "actionpermissions", name = "ActionPermissions", version = "1.0")
+@Plugin(id = "actioncontrol", name = "ActionControl", version = "1.0")
 public class ActionControl {
 	
 	@Inject
