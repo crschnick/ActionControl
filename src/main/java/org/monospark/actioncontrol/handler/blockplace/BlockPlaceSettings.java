@@ -47,7 +47,7 @@ public final class BlockPlaceSettings extends ActionSettings {
 		public BlockPlaceSettings deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
 				throws JsonParseException {
 			JsonObject object = json.getAsJsonObject();
-			ActionResponse response = context.deserialize(object.get("type"), ActionResponse.class);
+			ActionResponse response = context.deserialize(object.get("response"), ActionResponse.class);
 			String[] ids = context.deserialize(object.get("ids"), String[].class);
 			Set<BlockKindMatcher> matchers = new HashSet<BlockKindMatcher>();
 			for(String id : ids) {
