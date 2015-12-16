@@ -6,12 +6,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.monospark.actioncontrol.kind.matcher.KindMatcher;
 import org.monospark.actioncontrol.kind.matcher.KindWildcardMatcher;
 import org.monospark.actioncontrol.kind.object.ObjectKindRegistryBase;
 import org.spongepowered.api.CatalogTypes;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 
 public final class ItemKindRegistry extends ObjectKindRegistryBase<ItemKind> {
 
@@ -56,12 +59,24 @@ public final class ItemKindRegistry extends ObjectKindRegistryBase<ItemKind> {
 	}
 
 	@Override
-	protected KindWildcardMatcher createWildcardMatcher() {
-		return new KindWildcardMatcher(false, true);
+	protected void addCustomMatchers(Map<String, KindMatcher> matchers) {
+		matchers.put("*", new KindWildcardMatcher(false, true));
+		matchers.put("none", new KindMatcher() {
+			
+			@Override
+			public boolean matchesItemStack(ItemStack stack) {
+				return stack == null;
+			}
+			
+			@Override
+			public boolean matchesBlockState(BlockState state) {
+				return false;
+			}
+		});
 	}
 	
 	@Override
-	public Optional<ItemKind> getKind(String baseName, int variant) {
+	protected Optional<ItemKind> getKind(String baseName, int variant) {
 		if(isVanillaItem(baseName)) {
 			return getItemKind(baseName, variant);
 		} else {

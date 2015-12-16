@@ -23,6 +23,10 @@ public final class ItemKind extends Kind {
 
 	@Override
 	public boolean matchesItemStack(ItemStack stack) {
+		if(stack == null) {
+			return false;
+		}
+		
 		int damage = stack.toContainer().getInt(new DataQuery("UnsafeDamage")).get();
 		return stack.getItem().equals(type) && (damage & getVariant()) == getVariant();
 	}

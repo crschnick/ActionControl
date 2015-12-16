@@ -1,9 +1,11 @@
 package org.monospark.actioncontrol.kind.object.block;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.monospark.actioncontrol.kind.matcher.KindMatcher;
 import org.monospark.actioncontrol.kind.matcher.KindWildcardMatcher;
 import org.monospark.actioncontrol.kind.object.ObjectKindRegistryBase;
 import org.spongepowered.api.CatalogTypes;
@@ -35,12 +37,12 @@ public final class BlockKindRegistry extends ObjectKindRegistryBase<BlockKind> {
 	}
 
 	@Override
-	protected KindWildcardMatcher createWildcardMatcher() {
-		return new KindWildcardMatcher(true, false);
+	protected void addCustomMatchers(Map<String, KindMatcher> matchers) {
+		matchers.put("*", new KindWildcardMatcher(true, false));
 	}
 	
 	@Override
-	public Optional<BlockKind> getKind(String baseName, int variant) {
+	protected Optional<BlockKind> getKind(String baseName, int variant) {
 		for(BlockKind kind : allKinds) {
 			if(kind.getBaseName().equals(baseName) && kind.getVariant() == variant) {
 				return Optional.of(kind);

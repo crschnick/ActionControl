@@ -1,5 +1,6 @@
 package org.monospark.actioncontrol.kind.object;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -9,7 +10,8 @@ import org.monospark.actioncontrol.kind.Kind;
 import org.monospark.actioncontrol.kind.KindRegistry;
 import org.monospark.actioncontrol.kind.matcher.KindMatcher;
 import org.monospark.actioncontrol.kind.matcher.KindMatcherAmount;
-import org.monospark.actioncontrol.kind.matcher.KindWildcardMatcher;
+
+import com.google.common.collect.Maps;
 
 public abstract class ObjectKindRegistryBase<K extends Kind> implements KindRegistry {
 
@@ -24,19 +26,25 @@ public abstract class ObjectKindRegistryBase<K extends Kind> implements KindRegi
 
 	private boolean init;
 	
-	private KindWildcardMatcher wildcard;
+	private Map<String,KindMatcher> customMatchers;
 
 	protected abstract void init();
 	
-	protected abstract KindWildcardMatcher createWildcardMatcher();
+	protected abstract void addCustomMatchers(Map<String,KindMatcher> matchers);
 	
 	public final Optional<? extends KindMatcher> getMatcher(String name) {
 		Objects.requireNonNull(name, "Name must be not null");
 		
 		if(!this.init) {
 			init();
-			this.wildcard = createWildcardMatcher();
+			this.customMatchers = Maps.newHashMap();
+			addCustomMatchers(this.customMatchers);
 			this.init = true;
+		}
+		
+		KindMatcher customMatcher = customMatchers.get(name);
+		if(customMatcher != null) {
+			return Optional.of(customMatcher);
 		}
 		
 		Optional<String> formattedName = format(name);
@@ -44,7 +52,7 @@ public abstract class ObjectKindRegistryBase<K extends Kind> implements KindRegi
 			return Optional.empty();
 		}
 		
-		return createKindMatcher(name);
+		return createKindMatcher(formattedName.get());
 	}
 	
 	private Optional<String> format(String name) {	
@@ -68,10 +76,6 @@ public abstract class ObjectKindRegistryBase<K extends Kind> implements KindRegi
 	}
 	
 	private Optional<? extends KindMatcher> createKindMatcher(String name) {
-		if(name.equals("*")) {
-			return Optional.of(wildcard);
-		}
-		
 		Matcher matcher = KIND_NAME_PATTERN.matcher(name);
 		matcher.matches();
 		boolean isRange = matcher.group(DATA_RANGE_ADDITION) != null;
@@ -95,5 +99,5 @@ public abstract class ObjectKindRegistryBase<K extends Kind> implements KindRegi
 		}
 	}
 	
-	public abstract Optional<K> getKind(String baseName, int variant);
+	protected abstract Optional<K> getKind(String baseName, int variant);
 }
