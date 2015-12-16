@@ -1,19 +1,17 @@
-package org.monospark.actioncontrol.kind;
+package org.monospark.actioncontrol.kind.object;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.monospark.actioncontrol.kind.block.BlockKind;
-import org.monospark.actioncontrol.kind.block.BlockKindMatcher;
-import org.monospark.actioncontrol.kind.item.ItemKind;
-import org.monospark.actioncontrol.kind.item.ItemKindMatcher;
+import org.monospark.actioncontrol.kind.Kind;
+import org.monospark.actioncontrol.kind.KindRegistry;
+import org.monospark.actioncontrol.kind.matcher.KindMatcher;
+import org.monospark.actioncontrol.kind.matcher.KindMatcherAmount;
+import org.monospark.actioncontrol.kind.matcher.KindWildcardMatcher;
 
-public abstract class ObjectKindRegistry<K extends ObjectKind, M extends ObjectMatcher> {
+public abstract class ObjectKindRegistryBase<K extends Kind> implements KindRegistry {
 
 	private static final Pattern KIND_NAME_PATTERN = Pattern.compile("((\\w+:)?[a-zA-Z]\\w+)(:(\\d+)(-(\\d+))?)?");
 	
@@ -23,28 +21,21 @@ public abstract class ObjectKindRegistry<K extends ObjectKind, M extends ObjectM
 	private static final int DATA_VALUE = 4;
 	private static final int DATA_RANGE_ADDITION = 5;
 	private static final int DATA_RANGE_END = 6;
-	
-	public static Optional< ? extends ObjectMatcher> getObjectKindMatcher(String name) {
-		Optional<BlockKindMatcher> blockMatcher = BlockKind.getRegistry().get(name);
-		if(blockMatcher.isPresent()) {
-			return blockMatcher;
-		}
-		
-		Optional<ItemKindMatcher> itemMatcher = ItemKind.getRegistry().get(name);
-		return itemMatcher;
-	}
-	
-	private boolean init;
 
-	protected ObjectKindRegistry() {}
+	private boolean init;
 	
+	private KindWildcardMatcher wildcard;
+
 	protected abstract void init();
 	
-	public final Optional<M> get(String name) {
+	protected abstract KindWildcardMatcher createWildcardMatcher();
+	
+	public final Optional<? extends KindMatcher> getMatcher(String name) {
 		Objects.requireNonNull(name, "Name must be not null");
 		
 		if(!this.init) {
 			init();
+			this.wildcard = createWildcardMatcher();
 			this.init = true;
 		}
 		
@@ -53,15 +44,10 @@ public abstract class ObjectKindRegistry<K extends ObjectKind, M extends ObjectM
 			return Optional.empty();
 		}
 		
-		Optional<Set<K>> kinds = getContainedKinds(formattedName.get());
-		if(!kinds.isPresent()) {
-			return Optional.empty();
-		}
-
-		return Optional.of(createMatcher(kinds.get()));
+		return createKindMatcher(name);
 	}
 	
-	private Optional<String> format(String name) {
+	private Optional<String> format(String name) {	
 		Matcher matcher = KIND_NAME_PATTERN.matcher(name);
 		if(!matcher.matches()) {
 			return Optional.empty();
@@ -81,38 +67,33 @@ public abstract class ObjectKindRegistry<K extends ObjectKind, M extends ObjectM
 		return Optional.of(correctName);
 	}
 	
-	private Optional<Set<K>> getContainedKinds(String name) {
+	private Optional<? extends KindMatcher> createKindMatcher(String name) {
+		if(name.equals("*")) {
+			return Optional.of(wildcard);
+		}
+		
 		Matcher matcher = KIND_NAME_PATTERN.matcher(name);
 		matcher.matches();
 		boolean isRange = matcher.group(DATA_RANGE_ADDITION) != null;
 		if(isRange) {
 			int start = Integer.valueOf(matcher.group(DATA_VALUE));
 			int end = Integer.valueOf(matcher.group(DATA_RANGE_END));
-			
-			Set<K> variants = new HashSet<K>();
+
+			KindMatcherAmount.Builder builder = KindMatcherAmount.builder();
 			for (int i = start; i < end; i++) {
 				Optional<K> kind = getKind(matcher.group(NAME), i);
 				if(!kind.isPresent()) {
 					return Optional.empty();
 				}
 				
-				variants.add(kind.get());
+				builder.addKindMatcher(kind.get());
 			}
-			return Optional.of(variants);
+			
+			return Optional.of(builder.build());
 		} else {
-			Optional<K> kind = getKind(matcher.group(NAME), Integer.parseInt(matcher.group(DATA_VALUE)));
-			if(!kind.isPresent()) {
-				return Optional.empty();
-			}
-			return Optional.of(Collections.singleton(kind.get()));
+			return getKind(matcher.group(NAME), Integer.parseInt(matcher.group(DATA_VALUE)));
 		}
 	}
 	
-	protected abstract Optional<K> getKind(String baseName, int variant);
-	
-	protected abstract M createMatcher(Set<K> kinds);
-
-	public boolean isInitialized() {
-		return init;
-	}
+	public abstract Optional<K> getKind(String baseName, int variant);
 }

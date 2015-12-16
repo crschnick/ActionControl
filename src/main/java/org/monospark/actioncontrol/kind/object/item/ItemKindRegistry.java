@@ -1,4 +1,4 @@
-package org.monospark.actioncontrol.kind.item;
+package org.monospark.actioncontrol.kind.object.item;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -6,13 +6,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.monospark.actioncontrol.kind.ObjectKindRegistry;
+import org.monospark.actioncontrol.kind.matcher.KindWildcardMatcher;
+import org.monospark.actioncontrol.kind.object.ObjectKindRegistryBase;
 import org.spongepowered.api.CatalogTypes;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 
-public final class ItemKindRegistry extends ObjectKindRegistry<ItemKind, ItemKindMatcher> {
+public final class ItemKindRegistry extends ObjectKindRegistryBase<ItemKind> {
 
 	private static final Map<ItemType, int[]> VANILLA_ITEM_VARIANTS = getVanillaItemVariants();
 	
@@ -34,7 +35,7 @@ public final class ItemKindRegistry extends ObjectKindRegistry<ItemKind, ItemKin
 	
 	private final Set<ItemKind> allKinds = new HashSet<ItemKind>();
 
-	ItemKindRegistry() {}
+	public ItemKindRegistry() {}
 	
 	protected void init() {
 		for(ItemType type : Sponge.getRegistry().getAllOf(CatalogTypes.ITEM_TYPE)) {
@@ -55,7 +56,12 @@ public final class ItemKindRegistry extends ObjectKindRegistry<ItemKind, ItemKin
 	}
 
 	@Override
-	protected Optional<ItemKind> getKind(String baseName, int variant) {
+	protected KindWildcardMatcher createWildcardMatcher() {
+		return new KindWildcardMatcher(false, true);
+	}
+	
+	@Override
+	public Optional<ItemKind> getKind(String baseName, int variant) {
 		if(isVanillaItem(baseName)) {
 			return getItemKind(baseName, variant);
 		} else {
@@ -99,10 +105,5 @@ public final class ItemKindRegistry extends ObjectKindRegistry<ItemKind, ItemKin
 			}
 		}
 		return Optional.empty();
-	}
-
-	@Override
-	protected ItemKindMatcher createMatcher(Set<ItemKind> kinds) {
-		return new ItemKindMatcher(kinds);
 	}
 }

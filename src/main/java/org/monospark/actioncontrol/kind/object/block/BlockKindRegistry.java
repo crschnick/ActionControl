@@ -1,20 +1,21 @@
-package org.monospark.actioncontrol.kind.block;
+package org.monospark.actioncontrol.kind.object.block;
 
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.monospark.actioncontrol.kind.ObjectKindRegistry;
+import org.monospark.actioncontrol.kind.matcher.KindWildcardMatcher;
+import org.monospark.actioncontrol.kind.object.ObjectKindRegistryBase;
 import org.spongepowered.api.CatalogTypes;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.trait.BlockTrait;
 
-public final class BlockKindRegistry extends ObjectKindRegistry<BlockKind, BlockKindMatcher> {
+public final class BlockKindRegistry extends ObjectKindRegistryBase<BlockKind> {
 
 	private Set<BlockKind> allKinds;
 	
-	BlockKindRegistry() {
+	public BlockKindRegistry() {
 		this.allKinds = new HashSet<BlockKind>();
 	}
 	
@@ -34,12 +35,12 @@ public final class BlockKindRegistry extends ObjectKindRegistry<BlockKind, Block
 	}
 
 	@Override
-	protected BlockKindMatcher createMatcher(Set<BlockKind> kinds) {
-		return new BlockKindMatcher(kinds);
+	protected KindWildcardMatcher createWildcardMatcher() {
+		return new KindWildcardMatcher(true, false);
 	}
-
+	
 	@Override
-	protected Optional<BlockKind> getKind(String baseName, int variant) {
+	public Optional<BlockKind> getKind(String baseName, int variant) {
 		for(BlockKind kind : allKinds) {
 			if(kind.getBaseName().equals(baseName) && kind.getVariant() == variant) {
 				return Optional.of(kind);
