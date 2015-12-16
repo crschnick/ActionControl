@@ -31,7 +31,7 @@ public final class KindType<K extends Kind, R extends KindRegistry>{
 			
 			@Override
 			protected KindMatcher deserializeMatcher(String name) {
-				Optional<? extends KindMatcher> matcher = ITEM.getRegistry().getMatcher(name);
+				Optional<? extends KindMatcher> matcher = registry.getMatcher(name);
 				return matcher.isPresent() ? matcher.get() : null;
 			}
 		};
