@@ -21,7 +21,7 @@ public abstract class Kind implements KindMatcher {
 	}
 
 	public final String getName() {
-		return name + ":" + (variant != 0 ? variant : "");
+		return name + (variant != 0 ? ":" + variant : "");
 	}
 	
 	public final int getVariant() {
