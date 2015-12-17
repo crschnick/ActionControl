@@ -4,17 +4,17 @@ import java.util.Optional;
 
 import org.monospark.actioncontrol.group.Group;
 import org.monospark.actioncontrol.handler.ActionHandler;
+import org.monospark.actioncontrol.handler.ActionSettings;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.ChangeBlockEvent.Break;
 
-import com.google.common.collect.Sets;
-import com.google.gson.JsonDeserializer;
+import com.google.gson.GsonBuilder;
 
-public final class BlockBreakHandler extends ActionHandler<ChangeBlockEvent.Break, BlockBreakSettings> {
+public final class BlockBreakHandler extends ActionHandler<ChangeBlockEvent.Break, BlockBreakMatcher> {
 
 	public BlockBreakHandler() {
-		super("breakBlock", BlockBreakSettings.class, ChangeBlockEvent.Break.class);
+		super("breakBlock", BlockBreakMatcher.class, ChangeBlockEvent.Break.class);
 	}
 
 	@Override
@@ -30,24 +30,29 @@ public final class BlockBreakHandler extends ActionHandler<ChangeBlockEvent.Brea
 		}
 		
 		Group group = playerGroup.get();
-		Optional<BlockBreakSettings> settings = group.getActionSettings(this);
-		if(!settings.isPresent()) {
+		Optional<ActionSettings<BlockBreakMatcher>> matcher = group.getActionMatcher(this);
+		if(!matcher.isPresent()) {
 			return;
 		}
 		
-		boolean allowed = settings.get().canBreak(event.getTransactions().get(0).getOriginal().getState());
+		boolean matches = matcher.get().getMatcher().matches(player.get().getItemInHand(),
+				event.getTransactions().get(0).getOriginal().getState());
+		boolean allowed = matcher.get().isAllowed(matches);
 		if(!allowed) {
 			event.setCancelled(true);
 		}
 	}
 
 	@Override
-	public BlockBreakSettings uniteSettings(BlockBreakSettings s1, BlockBreakSettings s2) {
-		return new BlockBreakSettings(s1.getResponse(), Sets.union(s1.getMatchers(), s2.getMatchers()));
+	public BlockBreakMatcher uniteMatchers(BlockBreakMatcher m1, BlockBreakMatcher m2) {
+		return null;
 	}
-	
+
 	@Override
-	public JsonDeserializer<BlockBreakSettings> getSettingsDeserializer() {
-		return new BlockBreakSettings.Deserializer();
+	public void registerMatcherDeserializers(GsonBuilder builder) {
+		builder.registerTypeAdapter(BlockBreakMatcher.class, new BlockBreakMatcher.Deserializer());
+		builder.registerTypeAdapter(BlockBreakMatcher.ToolSettings.class,
+				new BlockBreakMatcher.ToolSettings.Deserializer());
+		
 	}
 }

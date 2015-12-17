@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.monospark.actioncontrol.handler.ActionHandler;
+import org.monospark.actioncontrol.handler.ActionMatcher;
 import org.monospark.actioncontrol.handler.ActionSettings;
 
 public final class Group {
@@ -16,9 +17,9 @@ public final class Group {
 
 	private String name;
 
-	private Map<ActionHandler<?,?>, ActionSettings> handlers;
+	private Map<ActionHandler<?,?>, ActionSettings<?>> handlers;
 
-	public Group(String name, Map<ActionHandler<?, ?>, ActionSettings> handlers) {
+	public Group(String name, Map<ActionHandler<?, ?>, ActionSettings<?>> handlers) {
 		this.name = name;
 		this.handlers = handlers;
 	}
@@ -28,7 +29,7 @@ public final class Group {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <S extends ActionSettings> Optional<S> getActionSettings(ActionHandler<?, S> handler) {
-		return Optional.ofNullable((S) handlers.get(handler));
+	public <M extends ActionMatcher> Optional<ActionSettings<M>> getActionMatcher(ActionHandler<?, M> handler) {
+		return Optional.ofNullable((ActionSettings<M>) handlers.get(handler));
 	}
 }

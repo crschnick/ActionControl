@@ -9,11 +9,11 @@ import org.monospark.actioncontrol.handler.blockplace.BlockPlaceHandler;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.EventListener;
 
-import com.google.gson.JsonDeserializer;
+import com.google.gson.GsonBuilder;
 
-public abstract class ActionHandler<T extends Event, S extends ActionSettings> implements EventListener<T> {
+public abstract class ActionHandler<T extends Event, M extends ActionMatcher> implements EventListener<T> {
 
-	public static final Set<ActionHandler<?,?>> ALL = createAllActionHandlers();
+	public static final Set<ActionHandler<?, ?>> ALL = createAllActionHandlers();
 	
 	public static Optional<ActionHandler<?, ?>> byName(String name) {
 		for (ActionHandler<?, ?> handler : ALL) {
@@ -24,9 +24,9 @@ public abstract class ActionHandler<T extends Event, S extends ActionSettings> i
 		return Optional.empty();
 	}
 	
-	private static final Set<ActionHandler<?,?>> createAllActionHandlers() {
-		Set<ActionHandler<?,?>> handlers = new HashSet<ActionHandler<?,?>>();
-		handlers.add(new BlockPlaceHandler());
+	private static final Set<ActionHandler<?, ?>> createAllActionHandlers() {
+		Set<ActionHandler<?, ?>> handlers = new HashSet<ActionHandler<?, ?>>();
+//		handlers.add(new BlockPlaceHandler());
 		handlers.add(new BlockBreakHandler());
 //		handlers.add(new CraftHandler());
 		return handlers;
@@ -34,26 +34,26 @@ public abstract class ActionHandler<T extends Event, S extends ActionSettings> i
 
 	private String name;
 	
-	private Class<S> settingsClass;
+	private Class<M> matcherClass;
 	
 	private Class<T> eventClass;
 	
-	protected ActionHandler(String name, Class<S> settingsClass, Class<T> eventClass) {
+	protected ActionHandler(String name, Class<M> matcherClass, Class<T> eventClass) {
 		this.name = name;
-		this.settingsClass = settingsClass;
+		this.matcherClass = matcherClass;
 		this.eventClass = eventClass;
 	}
 
-	public abstract S uniteSettings(S s1, S s2);
-	
-	public abstract JsonDeserializer<S> getSettingsDeserializer();
+	public abstract M uniteMatchers(M m1, M m2);
+
+	public abstract void registerMatcherDeserializers(GsonBuilder builder);
 
 	public String getName() {
 		return name;
 	}
 
-	public Class<S> getSettingsClass() {
-		return settingsClass;
+	public Class<M> getMatcherClass() {
+		return matcherClass;
 	}
 
 	public Class<T> getEventClass() {

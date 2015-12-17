@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import org.monospark.actioncontrol.group.Group;
 import org.monospark.actioncontrol.handler.ActionHandler;
+import org.monospark.actioncontrol.handler.ActionMatcher;
 import org.monospark.actioncontrol.handler.ActionSettings;
 
 import java.util.Optional;
@@ -29,7 +30,7 @@ public final class ConfigParser {
 				.registerTypeAdapter(ConfigGroup.class, new ConfigGroup.Deserializer())
 				.registerTypeAdapter(Config.class, new Config.Deserializer());
 		for(ActionHandler<?, ?> handler : ActionHandler.ALL) {
-			builder.registerTypeAdapter(handler.getSettingsClass(), handler.getSettingsDeserializer());
+			handler.registerMatcherDeserializers(builder);
 		}
 		return builder.create();
 	}
@@ -113,9 +114,9 @@ public final class ConfigParser {
 	}
 	
 	private static Group uniteGroups(String name, ConfigGroup child, Group parent) throws ConfigParseException {
-		Map<ActionHandler<?, ?>, ActionSettings> unitedSettings = Maps.newHashMap();
+		Map<ActionHandler<?, ?>, ActionSettings<?>> unitedSettings = Maps.newHashMap();
 		for(ActionHandler<?, ?> handler : ActionHandler.ALL) {
-			Optional<? extends ActionSettings> united = uniteSettings(handler, name, child, parent);
+			Optional<? extends ActionSettings<?>> united = uniteSettings(handler, name, child, parent);
 			if(united.isPresent()) {
 				unitedSettings.put(handler, united.get());
 			}
@@ -123,11 +124,11 @@ public final class ConfigParser {
 		return new Group(name, unitedSettings);
 	}
 	
-	private static <T extends ActionSettings> Optional<T> uniteSettings(ActionHandler<?, T> handler, String name,
-			ConfigGroup child, Group parent) throws ConfigParseException {
-		Optional<T> parentSettings = parent.getActionSettings(handler);
+	private static <M extends ActionMatcher> Optional<ActionSettings<M>> uniteSettings(ActionHandler<?, M> handler,
+			String name, ConfigGroup child, Group parent) throws ConfigParseException {
+		Optional<ActionSettings<M>> parentSettings = parent.getActionMatcher(handler);
 		@SuppressWarnings("unchecked")
-		T childSettings = (T) child.getSettings().get(handler);
+		ActionSettings<M> childSettings = (ActionSettings<M>) child.getSettings().get(handler);
 		if(!parentSettings.isPresent()) {
 			return Optional.ofNullable(childSettings);
 		}
@@ -139,6 +140,8 @@ public final class ConfigParser {
 			throw new ConfigParseException("name can't inherit the " + handler.getName() +
 					" settings, since their types are different");
 		}
-		return Optional.of(handler.uniteSettings(parentSettings.get(), childSettings));
+		M united = handler.uniteMatchers(parentSettings.get().getMatcher(), childSettings.getMatcher());
+		ActionSettings<M> unitedSettings = new ActionSettings<>(parentSettings.get().getResponse(), united);
+		return Optional.of(unitedSettings);
 	}
 }

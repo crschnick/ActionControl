@@ -13,7 +13,7 @@ import org.spongepowered.api.entity.living.player.Player;
 
 public final class GroupRegistry {
 
-	private static final String PERMISSION_BASE = "actionpermissions.group.";
+	private static final String PERMISSION_BASE = "actioncontrol.group.";
 	
 	private Set<Group> allGroups;
 	

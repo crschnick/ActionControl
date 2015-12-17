@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.monospark.actioncontrol.handler.ActionHandler;
+import org.monospark.actioncontrol.handler.ActionMatcher;
+import org.monospark.actioncontrol.handler.ActionResponse;
 import org.monospark.actioncontrol.handler.ActionSettings;
 
 import com.google.gson.JsonDeserializationContext;
@@ -18,9 +20,9 @@ final class ConfigGroup {
 
 	private Optional<String> parent;
 	
-	private Map<ActionHandler<?, ?>, ActionSettings> settings;
+	private Map<ActionHandler<?, ?>, ActionSettings<?>> settings;
 
-	private ConfigGroup(Optional<String> parent, Map<ActionHandler<?, ?>, ActionSettings> settings) {
+	private ConfigGroup(Optional<String> parent, Map<ActionHandler<?, ?>, ActionSettings<?>> settings) {
 		this.parent = parent;
 		this.settings = settings;
 	}
@@ -29,7 +31,7 @@ final class ConfigGroup {
 		return parent;
 	}
 
-	Map<ActionHandler<?, ?>, ActionSettings> getSettings() {
+	Map<ActionHandler<?, ?>, ActionSettings<?>> getSettings() {
 		return settings;
 	}
 
@@ -43,12 +45,27 @@ final class ConfigGroup {
 			JsonElement parentElement = object.get("parent");
 			Optional<String> parent = parentElement != null ?
 					Optional.of(parentElement.getAsString()) : Optional.empty();
-			Map<ActionHandler<?, ?>, ActionSettings> settings = new HashMap<ActionHandler<?, ?>, ActionSettings>();
+			Map<ActionHandler<?, ?>, ActionSettings<?>> settings =
+					new HashMap<ActionHandler<?, ?>, ActionSettings<?>>();
 			for (ActionHandler<?,?> handler : ActionHandler.ALL) {
-				JsonElement handlerSettings = object.get(handler.getName());
-				if(handlerSettings != null) {
-					settings.put(handler, context.deserialize(handlerSettings, handler.getSettingsClass()));
+				JsonObject handlerSettings = object.getAsJsonObject(handler.getName());
+				if(handlerSettings == null) {
+					throw new JsonParseException("Missing \"" + handler.getName() + "\" property");
 				}
+
+				JsonElement responseElement = handlerSettings.get("response");
+				if(responseElement == null) {
+					throw new JsonParseException("Missing \"response\" element");
+				}
+				ActionResponse response = context.deserialize(responseElement, ActionResponse.class);
+				
+				JsonElement matcherElement = handlerSettings.get("matcher");
+				if(matcherElement == null) {
+					throw new JsonParseException("Missing \"matcher\" element");
+				}
+				ActionMatcher matcher = context.deserialize(matcherElement, handler.getMatcherClass());
+				
+				settings.put(handler, new ActionSettings<ActionMatcher>(response, matcher));
 			}
 			return new ConfigGroup(parent, settings);
 		}

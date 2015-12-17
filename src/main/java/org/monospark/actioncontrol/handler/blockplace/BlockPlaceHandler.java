@@ -4,17 +4,19 @@ import java.util.Optional;
 
 import org.monospark.actioncontrol.group.Group;
 import org.monospark.actioncontrol.handler.ActionHandler;
+import org.monospark.actioncontrol.handler.ActionSettings;
+import org.monospark.actioncontrol.kind.matcher.KindMatcher;
+import org.monospark.actioncontrol.kind.matcher.KindMatcherAmount;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.ChangeBlockEvent.Place;
 
-import com.google.common.collect.Sets;
-import com.google.gson.JsonDeserializer;
+import com.google.gson.GsonBuilder;
 
-public final class BlockPlaceHandler extends ActionHandler<ChangeBlockEvent.Place, BlockPlaceSettings> {
+public final class BlockPlaceHandler extends ActionHandler<ChangeBlockEvent.Place, BlockPlaceMatcher> {
 
 	public BlockPlaceHandler() {
-		super("placeBlock", BlockPlaceSettings.class, ChangeBlockEvent.Place.class);
+		super("placeBlock", BlockPlaceMatcher.class, ChangeBlockEvent.Place.class);
 	}
 
 	@Override
@@ -30,24 +32,30 @@ public final class BlockPlaceHandler extends ActionHandler<ChangeBlockEvent.Plac
 		}
 		
 		Group group = playerGroup.get();
-		Optional<BlockPlaceSettings> settings = group.getActionSettings(this);
-		if(!settings.isPresent()) {
+		Optional<ActionSettings<BlockPlaceMatcher>> matcher = group.getActionMatcher(this);
+		if(!matcher.isPresent()) {
 			return;
 		}
 		
-		boolean allowed = settings.get().canPlace(event.getTransactions().get(0).getFinal().getState());
+		boolean matches = matcher.get().getMatcher().matches(event.getTransactions().get(0).getFinal().getState());
+		boolean allowed = matcher.get().isAllowed(matches);
 		if(!allowed) {
 			event.setCancelled(true);
 		}
 	}
 
 	@Override
-	public BlockPlaceSettings uniteSettings(BlockPlaceSettings s1, BlockPlaceSettings s2) {
-		return new BlockPlaceSettings(s1.getResponse(), Sets.union(s1.getMatchers(), s2.getMatchers()));
+	public void registerMatcherDeserializers(GsonBuilder builder) {
+		builder.registerTypeAdapter(BlockPlaceMatcher.class, new BlockPlaceMatcher.Deserializer());
 	}
-	
+
 	@Override
-	public JsonDeserializer<BlockPlaceSettings> getSettingsDeserializer() {
-		return new BlockPlaceSettings.Deserializer();
+	public BlockPlaceMatcher uniteMatchers(BlockPlaceMatcher m1, BlockPlaceMatcher m2) {
+		KindMatcher newMatcher = KindMatcherAmount.builder()
+				.addKindMatcher(m1.getBlockMatcher())
+				.addKindMatcher(m2.getBlockMatcher())
+				.build();
+		
+		return new BlockPlaceMatcher(newMatcher);
 	}
 }
