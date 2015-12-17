@@ -13,14 +13,14 @@ import com.google.gson.JsonParseException;
 
 final class Config {
 	
-	private Map<String, ConfigGroup> groups;
+	private Map<String, ConfigCategory> categories;
 
-	private Config(Map<String, ConfigGroup> groups) {
-		this.groups = groups;
+	private Config(Map<String, ConfigCategory> categories) {
+		this.categories = categories;
 	}
 
-	Map<String, ConfigGroup> getGroups() {
-		return groups;
+	Map<String, ConfigCategory> getCategories() {
+		return categories;
 	}
 
 	static final class Deserializer implements JsonDeserializer<Config> {
@@ -28,19 +28,14 @@ final class Config {
 		@Override
 		public Config deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
 				throws JsonParseException {
-			JsonObject object = json.getAsJsonObject().getAsJsonObject("groups");
-			if(object == null) {
-				throw new JsonParseException("Missing \"groups\" property");
-			}
-			
-			Map<String, ConfigGroup> groups = new HashMap<String, ConfigGroup>();
+			JsonObject object = json.getAsJsonObject().getAsJsonObject("categories");
+			Map<String, ConfigCategory> categories = new HashMap<String, ConfigCategory>();
 			for(Entry<String,JsonElement> entry : object.entrySet()) {
-				JsonObject groupObject = entry.getValue().getAsJsonObject();
-				ConfigGroup group = context.deserialize(groupObject, ConfigGroup.class);
-				groups.put(entry.getKey(), group);
+				JsonObject categoryObject = entry.getValue().getAsJsonObject();
+				ConfigCategory category = context.deserialize(categoryObject, ConfigCategory.class);
+				categories.put(entry.getKey(), category);
 			}
-			return new Config(groups);
+			return new Config(categories);
 		}
-		
 	}
 }

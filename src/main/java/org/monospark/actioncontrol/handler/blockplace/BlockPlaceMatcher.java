@@ -17,11 +17,11 @@ public final class BlockPlaceMatcher extends ActionMatcher {
 
 	private KindMatcher blockMatcher;
 
-	BlockPlaceMatcher(KindMatcher blockMatcher) {
+	private BlockPlaceMatcher(KindMatcher blockMatcher) {
 		this.blockMatcher = blockMatcher;
 	}
 	
-	public boolean matches(BlockState state) {
+	boolean matches(BlockState state) {
 		return blockMatcher.matchesBlockState(state);
 	}
 	
@@ -34,9 +34,5 @@ public final class BlockPlaceMatcher extends ActionMatcher {
 			KindMatcher blockMatcher = KindType.ITEM.getDeserializer().deserialize(object.get("blockIds"));
 			return new BlockPlaceMatcher(blockMatcher);
 		}
-	}
-
-	KindMatcher getBlockMatcher() {
-		return blockMatcher;
 	}
 }

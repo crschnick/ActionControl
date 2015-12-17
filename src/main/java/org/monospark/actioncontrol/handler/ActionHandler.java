@@ -4,14 +4,20 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import org.monospark.actioncontrol.group.Category;
 import org.monospark.actioncontrol.handler.blockbreak.BlockBreakHandler;
+import org.monospark.actioncontrol.handler.blockbreak.BlockBreakMatcher;
 import org.monospark.actioncontrol.handler.blockinteract.BlockInteractHandler;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.EventListener;
+import org.spongepowered.api.event.cause.CauseTracked;
 
 import com.google.gson.GsonBuilder;
 
-public abstract class ActionHandler<T extends Event, M extends ActionMatcher> implements EventListener<T> {
+public abstract class ActionHandler<T extends Event & Cancellable & CauseTracked, M extends ActionMatcher>
+		implements EventListener<T> {
 
 	public static final Set<ActionHandler<?, ?>> ALL = createAllActionHandlers();
 	
@@ -45,7 +51,34 @@ public abstract class ActionHandler<T extends Event, M extends ActionMatcher> im
 		this.eventClass = eventClass;
 	}
 
-	public abstract M uniteMatchers(M m1, M m2);
+	@Override
+	public final void handle(T event) throws Exception {
+		Optional<Player> player = event.getCause().first(Player.class);
+		if(!player.isPresent()) {
+			return;
+		}
+
+		Set<Category> categories = Category.getRegistry().getCategories(player.get());
+		if(categories.size() == 0) {
+			return;
+		}
+		
+		for(Category c : categories) {
+			Optional<ActionSettings<M>> settings = c.getActionSettings(this);
+			if(!settings.isPresent()) {
+				continue;
+			}
+			
+			boolean matches = matches(event, player.get(), settings.get().getMatcher());
+			boolean allowed = settings.get().isAllowed(matches);
+			if(!allowed) {
+				event.setCancelled(true);
+				return;
+			}
+		}
+	}
+
+	protected abstract boolean matches(T event, Player p, M matcher);
 
 	public abstract void registerMatcherDeserializers(GsonBuilder builder);
 

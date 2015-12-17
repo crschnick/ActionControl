@@ -1,15 +1,10 @@
 package org.monospark.actioncontrol.handler.blockbreak;
 
-import java.util.Optional;
-
-import org.monospark.actioncontrol.group.Group;
 import org.monospark.actioncontrol.handler.ActionHandler;
-import org.monospark.actioncontrol.handler.ActionSettings;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.ChangeBlockEvent.Break;
 
-import com.google.common.collect.Sets;
 import com.google.gson.GsonBuilder;
 
 public final class BlockBreakHandler extends ActionHandler<ChangeBlockEvent.Break, BlockBreakMatcher> {
@@ -19,34 +14,8 @@ public final class BlockBreakHandler extends ActionHandler<ChangeBlockEvent.Brea
 	}
 
 	@Override
-	public void handle(Break event) throws Exception {
-		Optional<Player> player = event.getCause().first(Player.class);
-		if(!player.isPresent()) {
-			return;
-		}
-
-		Optional<Group> playerGroup = Group.getRegistry().getGroup(player.get());
-		if(!playerGroup.isPresent()) {
-			return;
-		}
-		
-		Group group = playerGroup.get();
-		Optional<ActionSettings<BlockBreakMatcher>> matcher = group.getActionMatcher(this);
-		if(!matcher.isPresent()) {
-			return;
-		}
-		
-		boolean matches = matcher.get().getMatcher().matches(player.get().getItemInHand(),
-				event.getTransactions().get(0).getOriginal().getState());
-		boolean allowed = matcher.get().isAllowed(matches);
-		if(!allowed) {
-			event.setCancelled(true);
-		}
-	}
-
-	@Override
-	public BlockBreakMatcher uniteMatchers(BlockBreakMatcher m1, BlockBreakMatcher m2) {
-		return new BlockBreakMatcher(Sets.union(m1.getToolSettings(), m2.getToolSettings()));
+	protected boolean matches(Break event, Player p, BlockBreakMatcher matcher) {
+		return matcher.matches(p.getItemInHand(), event.getTransactions().get(0).getOriginal().getState());
 	}
 
 	@Override

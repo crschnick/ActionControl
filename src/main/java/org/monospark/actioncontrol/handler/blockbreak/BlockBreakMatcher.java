@@ -21,7 +21,7 @@ public final class BlockBreakMatcher extends ActionMatcher {
 
 	private Set<MatcherData> data;
 	
-	BlockBreakMatcher(Set<MatcherData> data) {
+	private BlockBreakMatcher(Set<MatcherData> data) {
 		this.data = data;
 	}
 
@@ -32,10 +32,6 @@ public final class BlockBreakMatcher extends ActionMatcher {
 			}
 		}
 		return false;
-	}
-
-	Set<MatcherData> getToolSettings() {
-		return data;
 	}
 
 	

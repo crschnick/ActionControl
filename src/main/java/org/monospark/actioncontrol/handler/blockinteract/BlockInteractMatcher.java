@@ -21,7 +21,7 @@ final class BlockInteractMatcher extends ActionMatcher {
 
 	private Set<MatcherData> data;
 
-	BlockInteractMatcher(Set<MatcherData> data) {
+	private BlockInteractMatcher(Set<MatcherData> data) {
 		this.data = data;
 	}
 
@@ -33,10 +33,6 @@ final class BlockInteractMatcher extends ActionMatcher {
 			}
 		}
 		return false;
-	}
-
-	Set<MatcherData> getData() {
-		return data;
 	}
 
 
