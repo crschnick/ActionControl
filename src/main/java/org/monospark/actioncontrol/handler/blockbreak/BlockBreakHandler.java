@@ -52,8 +52,8 @@ public final class BlockBreakHandler extends ActionHandler<ChangeBlockEvent.Brea
 	@Override
 	public void registerMatcherDeserializers(GsonBuilder builder) {
 		builder.registerTypeAdapter(BlockBreakMatcher.class, new BlockBreakMatcher.Deserializer());
-		builder.registerTypeAdapter(BlockBreakMatcher.ToolSettings.class,
-				new BlockBreakMatcher.ToolSettings.Deserializer());
+		builder.registerTypeAdapter(BlockBreakMatcher.MatcherData.class,
+				new BlockBreakMatcher.MatcherData.Deserializer());
 		
 	}
 }

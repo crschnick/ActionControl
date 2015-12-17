@@ -19,23 +19,23 @@ import com.google.gson.JsonParseException;
 
 public final class BlockBreakMatcher extends ActionMatcher {
 
-	private Set<ToolSettings> toolSettings;
+	private Set<MatcherData> data;
 	
-	BlockBreakMatcher(Set<ToolSettings> toolSettings) {
-		this.toolSettings = toolSettings;
+	BlockBreakMatcher(Set<MatcherData> data) {
+		this.data = data;
 	}
 
 	boolean matches(Optional<ItemStack> tool, BlockState block) {
-		for(ToolSettings s : toolSettings) {
-			if(s.getTools().matchesItemStack(tool.orElseGet(() -> null)) && s.getBlocks().matchesBlockState(block)) {
+		for(MatcherData s : data) {
+			if(s.getTools().matchesItemStack(tool.orElse(null)) && s.getBlocks().matchesBlockState(block)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	Set<ToolSettings> getToolSettings() {
-		return toolSettings;
+	Set<MatcherData> getToolSettings() {
+		return data;
 	}
 
 	
@@ -44,18 +44,19 @@ public final class BlockBreakMatcher extends ActionMatcher {
 		@Override
 		public BlockBreakMatcher deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
 				throws JsonParseException {
-			ToolSettings[] toolSettings = context.deserialize(json, ToolSettings[].class);
-			return new BlockBreakMatcher(Sets.newHashSet(toolSettings));
+			MatcherData[] data = context.deserialize(json, MatcherData[].class);
+			return new BlockBreakMatcher(Sets.newHashSet(data));
 		}
 	}
 	
-	static final class ToolSettings {
+	
+	static final class MatcherData {
 		
 		private KindMatcher tools;
 		
 		private KindMatcher blocks;
 
-		private ToolSettings(KindMatcher tools, KindMatcher blocks) {
+		private MatcherData(KindMatcher tools, KindMatcher blocks) {
 			this.tools = tools;
 			this.blocks = blocks;
 		}
@@ -69,15 +70,15 @@ public final class BlockBreakMatcher extends ActionMatcher {
 		}
 		
 		
-		static final class Deserializer implements JsonDeserializer<ToolSettings> {
+		static final class Deserializer implements JsonDeserializer<MatcherData> {
 			
 			@Override
-			public ToolSettings deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+			public MatcherData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
 					throws JsonParseException {
 				JsonObject object = json.getAsJsonObject();
 				KindMatcher toolMatcher = KindType.ITEM.getDeserializer().deserialize(object.get("toolIds"));
 				KindMatcher blockMatcher = KindType.BLOCK.getDeserializer().deserialize(object.get("blockIds"));
-				return new ToolSettings(toolMatcher, blockMatcher);
+				return new MatcherData(toolMatcher, blockMatcher);
 			}
 		}
 	}
