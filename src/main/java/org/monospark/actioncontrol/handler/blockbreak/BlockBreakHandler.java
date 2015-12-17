@@ -9,6 +9,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.ChangeBlockEvent.Break;
 
+import com.google.common.collect.Sets;
 import com.google.gson.GsonBuilder;
 
 public final class BlockBreakHandler extends ActionHandler<ChangeBlockEvent.Break, BlockBreakMatcher> {
@@ -45,7 +46,7 @@ public final class BlockBreakHandler extends ActionHandler<ChangeBlockEvent.Brea
 
 	@Override
 	public BlockBreakMatcher uniteMatchers(BlockBreakMatcher m1, BlockBreakMatcher m2) {
-		return null;
+		return new BlockBreakMatcher(Sets.union(m1.getToolSettings(), m2.getToolSettings()));
 	}
 
 	@Override

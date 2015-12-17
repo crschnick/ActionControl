@@ -33,7 +33,11 @@ public final class BlockBreakMatcher extends ActionMatcher {
 		}
 		return false;
 	}
-	
+
+	Set<ToolSettings> getToolSettings() {
+		return toolSettings;
+	}
+
 	
 	static final class Deserializer implements JsonDeserializer<BlockBreakMatcher> {
 
