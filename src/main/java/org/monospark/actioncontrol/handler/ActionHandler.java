@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.monospark.actioncontrol.handler.blockbreak.BlockBreakHandler;
-import org.monospark.actioncontrol.handler.blockplace.BlockPlaceHandler;
+import org.monospark.actioncontrol.handler.blockinteract.BlockInteractHandler;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.EventListener;
 
@@ -28,6 +28,7 @@ public abstract class ActionHandler<T extends Event, M extends ActionMatcher> im
 		Set<ActionHandler<?, ?>> handlers = new HashSet<ActionHandler<?, ?>>();
 //		handlers.add(new BlockPlaceHandler());
 		handlers.add(new BlockBreakHandler());
+		handlers.add(new BlockInteractHandler());
 //		handlers.add(new CraftHandler());
 		return handlers;
 	}
