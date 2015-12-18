@@ -11,9 +11,7 @@ import org.monospark.actioncontrol.kind.KindRegistry;
 import org.monospark.actioncontrol.kind.matcher.KindMatcher;
 import org.monospark.actioncontrol.kind.matcher.KindMatcherAmount;
 
-import com.google.common.collect.Maps;
-
-public abstract class ObjectKindRegistryBase<K extends Kind> implements KindRegistry {
+public abstract class ObjectKindRegistryBase<K extends Kind> extends KindRegistry {
 
 	private static final Pattern KIND_NAME_PATTERN = Pattern.compile("((\\w+:)?[a-zA-Z]\\w+)(:(\\d+)(-(\\d+))?)?");
 	
@@ -25,26 +23,17 @@ public abstract class ObjectKindRegistryBase<K extends Kind> implements KindRegi
 	private static final int DATA_RANGE_END = 6;
 
 	private boolean init;
-	
-	private Map<String,KindMatcher> customMatchers;
 
 	protected abstract void init();
 	
 	protected abstract void addCustomMatchers(Map<String,KindMatcher> matchers);
 	
-	public final Optional<? extends KindMatcher> getMatcher(String name) {
+	public final Optional<? extends KindMatcher> getNormalMatcher(String name) {
 		Objects.requireNonNull(name, "Name must be not null");
 		
 		if(!this.init) {
 			init();
-			this.customMatchers = Maps.newHashMap();
-			addCustomMatchers(this.customMatchers);
 			this.init = true;
-		}
-		
-		KindMatcher customMatcher = customMatchers.get(name);
-		if(customMatcher != null) {
-			return Optional.of(customMatcher);
 		}
 		
 		Optional<String> formattedName = format(name);
