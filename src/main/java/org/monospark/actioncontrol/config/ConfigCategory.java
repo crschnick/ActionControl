@@ -37,10 +37,15 @@ final class ConfigCategory {
 			Map<ActionHandler<?, ?>, ActionSettings<?>> settings =
 					new HashMap<ActionHandler<?, ?>, ActionSettings<?>>();
 			for(ActionHandler<?, ?> handler : ActionHandler.ALL) {
-				JsonObject settingsElement = object.get(handler.getName()).getAsJsonObject();
-				JsonElement responseElement = settingsElement.get("response");
+				JsonElement settingsElement = object.get(handler.getName());
+				if(settingsElement == null) {
+					continue;
+				}
+				
+				JsonObject settingsObject = settingsElement.getAsJsonObject();
+				JsonElement responseElement = settingsObject.get("response");
 				ActionResponse response = context.deserialize(responseElement, ActionResponse.class);
-				JsonElement matcherElement = settingsElement.get("matcher");
+				JsonElement matcherElement = settingsObject.get("matcher");
 				ActionMatcher matcher = context.deserialize(matcherElement, handler.getMatcherClass());
 				settings.put(handler, new ActionSettings<ActionMatcher>(response, matcher));
 			}
