@@ -38,7 +38,7 @@ public class ActionControl {
 	
 	@Listener
 	public void onServerInit(GameInitializationEvent event) {
-		Sponge.getGame().getCommandManager().register(this, createReloadCommandSpec(), "actioncontrol");
+		Sponge.getCommandDispatcher().register(this, createReloadCommandSpec(), "actioncontrol");
 		
 		for(ActionHandler<?, ?> handler : ActionHandler.ALL) {
 			registerActionHandler(handler);
