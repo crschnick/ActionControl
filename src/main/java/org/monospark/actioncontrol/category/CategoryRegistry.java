@@ -20,7 +20,7 @@ public final class CategoryRegistry {
 	CategoryRegistry() {}
 	
 	public void loadCategories(Path path) throws ConfigParseException {
-		Path categoriesFile = path.resolve("categories.json");
+		Path categoriesFile = path.resolve("config.json");
 		File file = categoriesFile.toFile();
 		try {
 			if(!file.exists()) {
