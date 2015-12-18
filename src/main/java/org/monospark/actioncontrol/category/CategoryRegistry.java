@@ -11,6 +11,8 @@ import org.monospark.actioncontrol.config.ConfigParseException;
 import org.monospark.actioncontrol.config.ConfigParser;
 import org.spongepowered.api.entity.living.player.Player;
 
+import com.google.gson.JsonParseException;
+
 public final class CategoryRegistry {
 
 	private static final String PERMISSION_BASE = "actioncontrol.category.";
@@ -30,7 +32,7 @@ public final class CategoryRegistry {
 			} else {
 				this.allCategories = ConfigParser.parseConfig(categoriesFile);
 			}
-		} catch (IOException e) {
+		} catch (IOException | JsonParseException e) {
 			this.allCategories = Collections.emptySet();
 			throw new ConfigParseException(e);
 		}
