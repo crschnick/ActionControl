@@ -31,6 +31,7 @@ public final class CategoryRegistry {
 				this.allCategories = ConfigParser.parseConfig(categoriesFile);
 			}
 		} catch (IOException e) {
+			this.allCategories = Collections.emptySet();
 			throw new ConfigParseException(e);
 		}
 	}
