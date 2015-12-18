@@ -19,7 +19,7 @@ public final class CategoryRegistry {
 	
 	CategoryRegistry() {}
 	
-	public void loadGroups(Path path) throws ConfigParseException {
+	public void loadCategories(Path path) throws ConfigParseException {
 		Path groupsFile = path.resolve("categories.json");
 		File file = groupsFile.toFile();
 		try {
