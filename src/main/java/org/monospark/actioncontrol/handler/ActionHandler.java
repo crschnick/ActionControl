@@ -6,8 +6,8 @@ import java.util.Set;
 
 import org.monospark.actioncontrol.category.Category;
 import org.monospark.actioncontrol.handler.blockbreak.BlockBreakHandler;
-import org.monospark.actioncontrol.handler.blockbreak.BlockBreakMatcher;
 import org.monospark.actioncontrol.handler.blockinteract.BlockInteractHandler;
+import org.monospark.actioncontrol.handler.blockplace.BlockPlaceHandler;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
@@ -32,7 +32,7 @@ public abstract class ActionHandler<T extends Event & Cancellable & CauseTracked
 	
 	private static final Set<ActionHandler<?, ?>> createAllActionHandlers() {
 		Set<ActionHandler<?, ?>> handlers = new HashSet<ActionHandler<?, ?>>();
-//		handlers.add(new BlockPlaceHandler());
+		handlers.add(new BlockPlaceHandler());
 		handlers.add(new BlockBreakHandler());
 		handlers.add(new BlockInteractHandler());
 //		handlers.add(new CraftHandler());
