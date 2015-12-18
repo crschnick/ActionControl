@@ -20,15 +20,15 @@ public final class CategoryRegistry {
 	CategoryRegistry() {}
 	
 	public void loadCategories(Path path) throws ConfigParseException {
-		Path groupsFile = path.resolve("categories.json");
-		File file = groupsFile.toFile();
+		Path categoriesFile = path.resolve("categories.json");
+		File file = categoriesFile.toFile();
 		try {
 			if(!file.exists()) {
 				path.toFile().mkdir();
 				file.createNewFile();
 				this.allCategories = Collections.emptySet();
 			} else {
-				this.allCategories = ConfigParser.parseConfig(groupsFile);
+				this.allCategories = ConfigParser.parseConfig(categoriesFile);
 			}
 		} catch (IOException e) {
 			throw new ConfigParseException(e);
