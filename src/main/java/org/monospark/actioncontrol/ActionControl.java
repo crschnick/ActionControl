@@ -2,8 +2,8 @@ package org.monospark.actioncontrol;
 
 import java.nio.file.Path;
 
+import org.monospark.actioncontrol.category.Category;
 import org.monospark.actioncontrol.config.ConfigParseException;
-import org.monospark.actioncontrol.group.Category;
 import org.monospark.actioncontrol.handler.ActionHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;

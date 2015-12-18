@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.monospark.actioncontrol.group.Category;
+import org.monospark.actioncontrol.category.Category;
 import org.monospark.actioncontrol.handler.blockbreak.BlockBreakHandler;
 import org.monospark.actioncontrol.handler.blockbreak.BlockBreakMatcher;
 import org.monospark.actioncontrol.handler.blockinteract.BlockInteractHandler;

@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.monospark.actioncontrol.group.Category;
+import org.monospark.actioncontrol.category.Category;
 import org.monospark.actioncontrol.handler.ActionHandler;
 
 import com.google.common.collect.Sets;

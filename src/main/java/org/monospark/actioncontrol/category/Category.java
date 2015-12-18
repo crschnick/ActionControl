@@ -1,4 +1,4 @@
-package org.monospark.actioncontrol.group;
+package org.monospark.actioncontrol.category;
 
 import java.util.Map;
 import java.util.Optional;
