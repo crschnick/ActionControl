@@ -14,7 +14,7 @@ import org.spongepowered.api.entity.EntityType;
 
 public final class EntityKindRegistry extends MatcherCreator<Entity> {
 
-	private static final Pattern ENTITY_NAME_PATTERN = Pattern.compile("(\\w:)(\\w)");
+	private static final Pattern ENTITY_NAME_PATTERN = Pattern.compile("(\\w+:)?(\\w+)");
 	
 	private static final int MOD_PREFIX = 1;
 	
@@ -54,7 +54,7 @@ public final class EntityKindRegistry extends MatcherCreator<Entity> {
 		if(!formattedName.isPresent()) {
 			return Optional.empty();
 		}
-		
+
 		return getByName(formattedName.get());
 	}
 	
