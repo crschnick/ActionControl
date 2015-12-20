@@ -9,11 +9,14 @@ import org.monospark.actioncontrol.handler.filter.ActionFilterTemplate;
 import org.monospark.actioncontrol.handler.impl.BlockBreakHandler;
 import org.monospark.actioncontrol.handler.impl.BlockInteractHandler;
 import org.monospark.actioncontrol.handler.impl.BlockPlaceHandler;
+import org.monospark.actioncontrol.handler.impl.EntityInteractHandler;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.EventListener;
+import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.CauseTracked;
+import org.spongepowered.api.event.entity.InteractEntityEvent;
 
 public abstract class ActionHandler<E extends Event & Cancellable & CauseTracked>
 		implements EventListener<E> {
@@ -33,7 +36,14 @@ public abstract class ActionHandler<E extends Event & Cancellable & CauseTracked
 		Set<ActionHandler<?>> handlers = new HashSet<ActionHandler<?>>();
 		handlers.add(new BlockPlaceHandler());
 		handlers.add(new BlockBreakHandler());
-		handlers.add(new BlockInteractHandler());
+		handlers.add(new BlockInteractHandler<InteractBlockEvent.Primary>("leftClickBlock",
+				InteractBlockEvent.Primary.class));
+		handlers.add(new BlockInteractHandler<InteractBlockEvent.Secondary>("rightClickBlock",
+				InteractBlockEvent.Secondary.class));
+		handlers.add(new EntityInteractHandler<InteractEntityEvent.Primary>("leftClickEntity",
+				InteractEntityEvent.Primary.class));
+		handlers.add(new EntityInteractHandler<InteractEntityEvent.Secondary>("rightClickEntity",
+				InteractEntityEvent.Secondary.class));
 		return handlers;
 	}
 
@@ -57,7 +67,7 @@ public abstract class ActionHandler<E extends Event & Cancellable & CauseTracked
 		if(!player.isPresent()) {
 			return;
 		}
-
+		
 		Set<Category> categories = Category.getRegistry().getCategories(player.get());
 		if(categories.size() == 0) {
 			return;
