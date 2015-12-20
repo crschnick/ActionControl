@@ -5,24 +5,23 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.monospark.actioncontrol.category.Category;
-import org.monospark.actioncontrol.handler.blockbreak.BlockBreakHandler;
-import org.monospark.actioncontrol.handler.blockinteract.BlockInteractHandler;
-import org.monospark.actioncontrol.handler.blockplace.BlockPlaceHandler;
+import org.monospark.actioncontrol.handler.filter.ActionFilterTemplate;
+import org.monospark.actioncontrol.handler.impl.BlockBreakHandler;
+import org.monospark.actioncontrol.handler.impl.BlockInteractHandler;
+import org.monospark.actioncontrol.handler.impl.BlockPlaceHandler;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.EventListener;
 import org.spongepowered.api.event.cause.CauseTracked;
 
-import com.google.gson.GsonBuilder;
+public abstract class ActionHandler<E extends Event & Cancellable & CauseTracked>
+		implements EventListener<E> {
 
-public abstract class ActionHandler<T extends Event & Cancellable & CauseTracked, M extends ActionMatcher>
-		implements EventListener<T> {
-
-	public static final Set<ActionHandler<?, ?>> ALL = createAllActionHandlers();
+	public static final Set<ActionHandler<?>> ALL = createAllActionHandlers();
 	
-	public static Optional<ActionHandler<?, ?>> byName(String name) {
-		for (ActionHandler<?, ?> handler : ALL) {
+	public static Optional<ActionHandler<?>> byName(String name) {
+		for (ActionHandler<?> handler : ALL) {
 			if(handler.getName().equals(name)) {
 				return Optional.of(handler);
 			}
@@ -30,29 +29,30 @@ public abstract class ActionHandler<T extends Event & Cancellable & CauseTracked
 		return Optional.empty();
 	}
 	
-	private static final Set<ActionHandler<?, ?>> createAllActionHandlers() {
-		Set<ActionHandler<?, ?>> handlers = new HashSet<ActionHandler<?, ?>>();
+	private static final Set<ActionHandler<?>> createAllActionHandlers() {
+		Set<ActionHandler<?>> handlers = new HashSet<ActionHandler<?>>();
 		handlers.add(new BlockPlaceHandler());
 		handlers.add(new BlockBreakHandler());
 		handlers.add(new BlockInteractHandler());
-//		handlers.add(new CraftHandler());
 		return handlers;
 	}
 
 	private String name;
 	
-	private Class<M> matcherClass;
+	private Class<E> eventClass;
 	
-	private Class<T> eventClass;
-	
-	protected ActionHandler(String name, Class<M> matcherClass, Class<T> eventClass) {
+	private ActionFilterTemplate filter;
+
+	protected ActionHandler(String name, Class<E> eventClass) {
 		this.name = name;
-		this.matcherClass = matcherClass;
 		this.eventClass = eventClass;
+		filter = createFilter();
 	}
+	
+	protected abstract ActionFilterTemplate createFilter();
 
 	@Override
-	public final void handle(T event) throws Exception {
+	public final void handle(E event) throws Exception {
 		Optional<Player> player = event.getCause().first(Player.class);
 		if(!player.isPresent()) {
 			return;
@@ -64,13 +64,12 @@ public abstract class ActionHandler<T extends Event & Cancellable & CauseTracked
 		}
 		
 		for(Category c : categories) {
-			Optional<ActionSettings<M>> settings = c.getActionSettings(this);
+			Optional<ActionSettings<E>> settings = c.getActionSettings(this);
 			if(!settings.isPresent()) {
 				continue;
 			}
 			
-			boolean matches = matches(event, player.get(), settings.get().getMatcher());
-			boolean allowed = settings.get().isAllowed(matches);
+			boolean allowed = settings.get().isAllowed(event);
 			if(!allowed) {
 				event.setCancelled(true);
 				return;
@@ -78,19 +77,15 @@ public abstract class ActionHandler<T extends Event & Cancellable & CauseTracked
 		}
 	}
 
-	protected abstract boolean matches(T event, Player p, M matcher);
-
-	public abstract void registerMatcherDeserializers(GsonBuilder builder);
-
 	public String getName() {
 		return name;
 	}
 
-	public Class<M> getMatcherClass() {
-		return matcherClass;
+	public Class<E> getEventClass() {
+		return eventClass;
 	}
 
-	public Class<T> getEventClass() {
-		return eventClass;
+	public ActionFilterTemplate getFilterTemplate() {
+		return filter;
 	}
 }

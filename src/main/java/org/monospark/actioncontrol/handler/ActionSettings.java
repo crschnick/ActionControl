@@ -1,29 +1,32 @@
 package org.monospark.actioncontrol.handler;
 
-public final class ActionSettings<M extends ActionMatcher> {
+import java.util.Set;
+
+import org.monospark.actioncontrol.handler.filter.ActionFilter;
+import org.spongepowered.api.event.Event;
+
+public final class ActionSettings<E extends Event> {
 
 	private ActionResponse response;
 	
-	private M matcher;
+	private Set<ActionFilter<E>> filters;
 
-	public ActionSettings(ActionResponse response, M matcher) {
+	public ActionSettings(ActionResponse response, Set<ActionFilter<E>> filters) {
 		this.response = response;
-		this.matcher = matcher;
+		this.filters = filters;
 	}
 	
-	public boolean isAllowed(boolean matches) {
-		if(matches) {
-			return response == ActionResponse.ALLOW;
-		} else {
-			return response == ActionResponse.DENY;
+	public boolean isAllowed(E event) {
+		boolean matchOccured = false;
+		
+		for (ActionFilter<E> filter : filters) {
+			boolean matches = filter.matches(event);
+			if(matches) {
+				matchOccured = true;
+				break;
+			}
 		}
-	}
-	
-	public ActionResponse getResponse() {
-		return response;
-	}
-
-	public M getMatcher() {
-		return matcher;
+		
+		return matchOccured ? response == ActionResponse.ALLOW : response == ActionResponse.DENY;
 	}
 }

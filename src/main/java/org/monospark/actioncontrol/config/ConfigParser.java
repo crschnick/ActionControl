@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.monospark.actioncontrol.category.Category;
-import org.monospark.actioncontrol.handler.ActionHandler;
 
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
@@ -21,9 +20,6 @@ public final class ConfigParser {
 		GsonBuilder builder = new GsonBuilder()
 				.registerTypeAdapter(ConfigCategory.class, new ConfigCategory.Deserializer())
 				.registerTypeAdapter(Config.class, new Config.Deserializer());
-		for(ActionHandler<?, ?> handler : ActionHandler.ALL) {
-			handler.registerMatcherDeserializers(builder);
-		}
 		return builder.create();
 	}
 	
