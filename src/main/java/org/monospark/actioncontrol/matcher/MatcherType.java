@@ -8,6 +8,7 @@ import org.monospark.actioncontrol.matcher.object.all.AllKindRegistry;
 import org.monospark.actioncontrol.matcher.object.block.BlockKindRegistry;
 import org.monospark.actioncontrol.matcher.object.item.ItemKindRegistry;
 import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.item.inventory.ItemStack;
 
@@ -21,7 +22,7 @@ public final class MatcherType<T> {
 	
 	public static final MatcherType<Entity> ENTITY = new MatcherType<>(new EntityKindRegistry());
 	
-	public static final MatcherType<?> ENCHANTMENT = new MatcherType<>(new EnchantmentKindRegistry());
+	public static final MatcherType<ItemEnchantment> ENCHANTMENT = new MatcherType<>(new EnchantmentKindRegistry());
 	
 	private MatcherCreator<T> creator;
 
