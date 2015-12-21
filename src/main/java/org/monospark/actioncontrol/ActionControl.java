@@ -18,7 +18,6 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.cause.CauseTracked;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.text.Texts;
@@ -40,14 +39,14 @@ public class ActionControl {
 	public void onServerInit(GameInitializationEvent event) {
 		Sponge.getCommandDispatcher().register(this, createReloadCommandSpec(), "actioncontrol");
 		
-		for(ActionHandler<?> handler : ActionHandler.ALL) {
+		for(ActionHandler<?, ?> handler : ActionHandler.ALL) {
 			registerActionHandler(handler);
 		}
 		
 		loadConfig();
 	}
 	
-	private <E extends Event & Cancellable & CauseTracked> void registerActionHandler(ActionHandler<E> handler) {
+	private <E extends Event & Cancellable> void registerActionHandler(ActionHandler<E, ?> handler) {
 		Sponge.getGame().getEventManager().registerListener(this, handler.getEventClass(), handler);
 	}
 	

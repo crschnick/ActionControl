@@ -21,7 +21,7 @@ public final class ItemKind extends ObjectKind implements Matcher<ItemStackSnaps
 			return false;
 		}
 		
-		int damage = stack.toContainer().getInt(new DataQuery("UnsafeDamage")).get();
+		int damage = stack.createStack().toContainer().getInt(new DataQuery("UnsafeDamage")).get();
 		return stack.getType() == type && (damage & getVariant()) == getVariant();
 	}
 	
