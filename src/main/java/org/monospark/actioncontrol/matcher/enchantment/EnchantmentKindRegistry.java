@@ -15,7 +15,7 @@ import org.spongepowered.api.item.Enchantment;
 
 public class EnchantmentKindRegistry extends MatcherCreator<ItemEnchantment> {
 
-	private static final Pattern ENCHANTMENT_NAME_PATTERN = Pattern.compile("(\\w+:)?(\\w+)(\\((\\d+)(-(\\d+)\\)?)?");
+	private static final Pattern ENCHANTMENT_NAME_PATTERN = Pattern.compile("(\\w+:)?(\\w+)(\\((\\d+)(-(\\d+)\\))?)?");
 	
 	private static final int MOD_PREFIX = 1;
 	private static final int NAME = 2;
