@@ -8,11 +8,11 @@ import org.monospark.actioncontrol.matcher.Matcher;
 import org.monospark.actioncontrol.matcher.object.ObjectKindRegistry;
 import org.spongepowered.api.CatalogTypes;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.trait.BlockTrait;
 
-public final class BlockKindRegistry extends ObjectKindRegistry<BlockKind, BlockState> {
+public final class BlockKindRegistry extends ObjectKindRegistry<BlockKind, BlockSnapshot> {
 
 	private Set<BlockKind> allKinds;
 	
@@ -36,11 +36,11 @@ public final class BlockKindRegistry extends ObjectKindRegistry<BlockKind, Block
 	}
 
 	@Override
-	protected Matcher<BlockState> createWildcardMatcher() {
-		return new Matcher<BlockState>() {
+	protected Matcher<BlockSnapshot> createWildcardMatcher() {
+		return new Matcher<BlockSnapshot>() {
 
 			@Override
-			public boolean matches(BlockState o) {
+			public boolean matches(BlockSnapshot o) {
 				return true;
 			}
 		};

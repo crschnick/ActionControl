@@ -6,7 +6,7 @@ import org.monospark.actioncontrol.matcher.Matcher;
 import org.monospark.actioncontrol.matcher.MatcherCreator;
 import org.monospark.actioncontrol.matcher.MatcherType;
 import org.monospark.actioncontrol.matcher.object.block.BlockKind;
-import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
@@ -26,7 +26,7 @@ public final class AllKindRegistry extends MatcherCreator<ItemStackSnapshot> {
 	
 	@Override
 	public Optional<? extends Matcher<ItemStackSnapshot>> getNormalMatcher(String name) {
-		Optional<? extends Matcher<BlockState>> blockMatcher = MatcherType.BLOCK.getMatcher(name);
+		Optional<? extends Matcher<BlockSnapshot>> blockMatcher = MatcherType.BLOCK.getMatcher(name);
 		if(blockMatcher.isPresent()) {
 			BlockKind kind = (BlockKind) blockMatcher.get();
 			return Optional.of(new Matcher<ItemStackSnapshot>() {

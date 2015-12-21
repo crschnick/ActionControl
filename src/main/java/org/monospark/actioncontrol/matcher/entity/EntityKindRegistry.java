@@ -9,10 +9,10 @@ import org.monospark.actioncontrol.matcher.Matcher;
 import org.monospark.actioncontrol.matcher.MatcherCreator;
 import org.spongepowered.api.CatalogTypes;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
 
-public final class EntityKindRegistry extends MatcherCreator<Entity> {
+public final class EntityKindRegistry extends MatcherCreator<EntitySnapshot> {
 
 	private static final Pattern ENTITY_NAME_PATTERN = Pattern.compile("(\\w+:)?(\\w+)");
 	
@@ -33,18 +33,18 @@ public final class EntityKindRegistry extends MatcherCreator<Entity> {
 	}
 
 	@Override
-	protected Matcher<Entity> createWildcardMatcher() {
-		return new Matcher<Entity>() {
+	protected Matcher<EntitySnapshot> createWildcardMatcher() {
+		return new Matcher<EntitySnapshot>() {
 			
 			@Override
-			public boolean matches(Entity e) {
+			public boolean matches(EntitySnapshot e) {
 				return true;
 			}
 		};
 	}
 	
 	@Override
-	protected Optional<? extends Matcher<Entity>> getNormalMatcher(String name) {
+	protected Optional<? extends Matcher<EntitySnapshot>> getNormalMatcher(String name) {
 		if(!init) {
 			init();
 			init = true;

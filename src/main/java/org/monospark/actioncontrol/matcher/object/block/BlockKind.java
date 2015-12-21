@@ -2,11 +2,11 @@ package org.monospark.actioncontrol.matcher.object.block;
 
 import org.monospark.actioncontrol.matcher.Matcher;
 import org.monospark.actioncontrol.matcher.object.ObjectKind;
-import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.data.DataQuery;
 
-public final class BlockKind extends ObjectKind implements Matcher<BlockState> {
+public final class BlockKind extends ObjectKind implements Matcher<BlockSnapshot> {
 
 	private BlockType type;
 	
@@ -16,9 +16,9 @@ public final class BlockKind extends ObjectKind implements Matcher<BlockState> {
 	}
 	
 	@Override
-	public boolean matches(BlockState state) {
-		int meta = state.toContainer().getInt(new DataQuery("UnsafeMeta")).get();
-		return type.equals(state.getType()) && (meta & getVariant()) == getVariant();
+	public boolean matches(BlockSnapshot block) {
+		int meta = block.toContainer().getInt(new DataQuery("UnsafeMeta")).get();
+		return type.equals(block.getState().getType()) && (meta & getVariant()) == getVariant();
 	}
 	
 	
