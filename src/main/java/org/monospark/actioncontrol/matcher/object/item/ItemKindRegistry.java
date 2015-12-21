@@ -12,9 +12,9 @@ import org.spongepowered.api.CatalogTypes;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
-public final class ItemKindRegistry extends ObjectKindRegistry<ItemKind, ItemStack> {
+public final class ItemKindRegistry extends ObjectKindRegistry<ItemKind, ItemStackSnapshot> {
 
 	private static final Map<ItemType, int[]> VANILLA_ITEM_VARIANTS = getVanillaItemVariants();
 	
@@ -57,26 +57,26 @@ public final class ItemKindRegistry extends ObjectKindRegistry<ItemKind, ItemSta
 	}
 
 	@Override
-	protected Matcher<ItemStack> createWildcardMatcher() {
-		return new Matcher<ItemStack>() {
+	protected Matcher<ItemStackSnapshot> createWildcardMatcher() {
+		return new Matcher<ItemStackSnapshot>() {
 
 			@Override
-			public boolean matches(ItemStack o) {
+			public boolean matches(ItemStackSnapshot o) {
 				if(o == null) {
 					return true;
 				}
 				
-				return !o.getItem().getBlock().isPresent();
+				return !o.getType().getBlock().isPresent();
 			}
 		};
 	}
 	
 	@Override
-	protected void addCustomMatchers(Map<String, Matcher<ItemStack>> matchers) {
-		matchers.put("none", new Matcher<ItemStack>() {
+	protected void addCustomMatchers(Map<String, Matcher<ItemStackSnapshot>> matchers) {
+		matchers.put("none", new Matcher<ItemStackSnapshot>() {
 
 			@Override
-			public boolean matches(ItemStack o) {
+			public boolean matches(ItemStackSnapshot o) {
 				return o == null;
 			}
 		});

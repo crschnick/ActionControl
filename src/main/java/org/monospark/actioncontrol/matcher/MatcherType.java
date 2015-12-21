@@ -10,15 +10,15 @@ import org.monospark.actioncontrol.matcher.object.item.ItemKindRegistry;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 public final class MatcherType<T> {
 
 	public static final MatcherType<BlockState> BLOCK = new MatcherType<>(new BlockKindRegistry());
 	
-	public static final MatcherType<ItemStack> ITEM = new MatcherType<>(new ItemKindRegistry());
+	public static final MatcherType<ItemStackSnapshot> ITEM = new MatcherType<>(new ItemKindRegistry());
 	
-	public static final MatcherType<ItemStack> OBJECT = new MatcherType<>(new AllKindRegistry());
+	public static final MatcherType<ItemStackSnapshot> OBJECT = new MatcherType<>(new AllKindRegistry());
 	
 	public static final MatcherType<Entity> ENTITY = new MatcherType<>(new EntityKindRegistry());
 	

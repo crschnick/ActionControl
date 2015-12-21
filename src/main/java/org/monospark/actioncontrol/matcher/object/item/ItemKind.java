@@ -4,9 +4,9 @@ import org.monospark.actioncontrol.matcher.Matcher;
 import org.monospark.actioncontrol.matcher.object.ObjectKind;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
-public final class ItemKind extends ObjectKind implements Matcher<ItemStack> {
+public final class ItemKind extends ObjectKind implements Matcher<ItemStackSnapshot> {
 
 	private ItemType type;
 	
@@ -16,13 +16,13 @@ public final class ItemKind extends ObjectKind implements Matcher<ItemStack> {
 	}
 
 	@Override
-	public boolean matches(ItemStack stack) {
+	public boolean matches(ItemStackSnapshot stack) {
 		if(stack == null) {
 			return false;
 		}
 		
 		int damage = stack.toContainer().getInt(new DataQuery("UnsafeDamage")).get();
-		return stack.getItem().equals(type) && (damage & getVariant()) == getVariant();
+		return stack.getType() == type && (damage & getVariant()) == getVariant();
 	}
 	
 	public ItemType getItemType() {
