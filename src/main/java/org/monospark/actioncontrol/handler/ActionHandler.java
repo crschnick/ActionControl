@@ -18,51 +18,51 @@ import org.spongepowered.api.event.entity.InteractEntityEvent;
 import com.google.gson.JsonElement;
 
 public abstract class ActionHandler<E extends Event & Cancellable, S extends ActionSettings>
-		implements EventListener<E> {
+        implements EventListener<E> {
 
-	public static final Set<ActionHandler<?, ?>> ALL = createAllActionHandlers();
-	
-	public static Optional<ActionHandler<?, ?>> byName(String name) {
-		for (ActionHandler<?, ?> handler : ALL) {
-			if(handler.getName().equals(name)) {
-				return Optional.of(handler);
-			}
-		}
-		return Optional.empty();
-	}
-	
-	private static final Set<ActionHandler<?, ?>> createAllActionHandlers() {
-		Set<ActionHandler<?, ?>> handlers = new HashSet<ActionHandler<?, ?>>();
-		handlers.add(new BlockPlaceHandler());
-		handlers.add(new BlockBreakHandler());
-		handlers.add(new BlockInteractHandler<InteractBlockEvent.Primary>("leftClickBlock",
-				InteractBlockEvent.Primary.class));
-		handlers.add(new BlockInteractHandler<InteractBlockEvent.Secondary>("rightClickBlock",
-				InteractBlockEvent.Secondary.class));
-		handlers.add(new EntityInteractHandler<InteractEntityEvent.Primary>("leftClickEntity",
-				InteractEntityEvent.Primary.class));
-		handlers.add(new EntityInteractHandler<InteractEntityEvent.Secondary>("rightClickEntity",
-				InteractEntityEvent.Secondary.class));
-		handlers.add(new UseItemHandler());
-		return handlers;
-	}
+    public static final Set<ActionHandler<?, ?>> ALL = createAllActionHandlers();
 
-	private String name;
-	
-	private Class<E> eventClass;
+    public static Optional<ActionHandler<?, ?>> byName(String name) {
+        for (ActionHandler<?, ?> handler : ALL) {
+            if (handler.getName().equals(name)) {
+                return Optional.of(handler);
+            }
+        }
+        return Optional.empty();
+    }
 
-	protected ActionHandler(String name, Class<E> eventClass) {
-		this.name = name;
-		this.eventClass = eventClass;
-	}
-	
-	public abstract S deserializeSettings(JsonElement json);
+    private static Set<ActionHandler<?, ?>> createAllActionHandlers() {
+        Set<ActionHandler<?, ?>> handlers = new HashSet<ActionHandler<?, ?>>();
+        handlers.add(new BlockPlaceHandler());
+        handlers.add(new BlockBreakHandler());
+        handlers.add(new BlockInteractHandler<InteractBlockEvent.Primary>("leftClickBlock",
+                InteractBlockEvent.Primary.class));
+        handlers.add(new BlockInteractHandler<InteractBlockEvent.Secondary>("rightClickBlock",
+                InteractBlockEvent.Secondary.class));
+        handlers.add(new EntityInteractHandler<InteractEntityEvent.Primary>("leftClickEntity",
+                InteractEntityEvent.Primary.class));
+        handlers.add(new EntityInteractHandler<InteractEntityEvent.Secondary>("rightClickEntity",
+                InteractEntityEvent.Secondary.class));
+        handlers.add(new UseItemHandler());
+        return handlers;
+    }
 
-	public String getName() {
-		return name;
-	}
+    private String name;
 
-	public Class<E> getEventClass() {
-		return eventClass;
-	}
+    private Class<E> eventClass;
+
+    protected ActionHandler(String name, Class<E> eventClass) {
+        this.name = name;
+        this.eventClass = eventClass;
+    }
+
+    public abstract S deserializeSettings(JsonElement json);
+
+    public final String getName() {
+        return name;
+    }
+
+    public final Class<E> getEventClass() {
+        return eventClass;
+    }
 }

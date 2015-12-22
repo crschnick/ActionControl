@@ -6,18 +6,18 @@ import org.spongepowered.api.entity.EntityType;
 
 public final class EntityKind implements Matcher<EntitySnapshot> {
 
-	private EntityType type;
-	
-	EntityKind(EntityType type) {
-		this.type = type;
-	}
+    private EntityType type;
 
-	@Override
-	public boolean matches(EntitySnapshot e) {
-		return type == e.getType();
-	}
-	
-	public EntityType getType() {
-		return type;
-	}
+    EntityKind(EntityType type) {
+        this.type = type;
+    }
+
+    @Override
+    public boolean matches(EntitySnapshot e) {
+        return type == e.getType();
+    }
+
+    public EntityType getType() {
+        return type;
+    }
 }

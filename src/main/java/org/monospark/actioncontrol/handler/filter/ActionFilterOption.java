@@ -7,27 +7,27 @@ import org.spongepowered.api.event.Event;
 
 public final class ActionFilterOption<T, E extends Event> {
 
-	private String name;
-	
-	private MatcherType<T> type;
+    private String name;
 
-	private Function<E, T> function;
+    private MatcherType<T> type;
 
-	public ActionFilterOption(String name, MatcherType<T> type, Function<E, T> function) {
-		this.name = name;
-		this.type = type;
-		this.function = function;
-	}
+    private Function<E, T> function;
 
-	public String getName() {
-		return name;
-	}
+    public ActionFilterOption(String name, MatcherType<T> type, Function<E, T> function) {
+        this.name = name;
+        this.type = type;
+        this.function = function;
+    }
 
-	public MatcherType<T> getType() {
-		return type;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Function<E, T> getFunction() {
-		return function;
-	}
+    public MatcherType<T> getType() {
+        return type;
+    }
+
+    public Function<E, T> getFunction() {
+        return function;
+    }
 }

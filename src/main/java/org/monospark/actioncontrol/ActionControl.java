@@ -26,68 +26,68 @@ import org.spongepowered.api.text.format.TextColors;
 import com.google.inject.Inject;
 
 @Plugin(id = "actioncontrol", name = "ActionControl", version = "1.0")
-public class ActionControl {
-	
-	@Inject
-	@ConfigDir(sharedRoot = false)
-	private Path privateConfigDir;
-	
-	@Inject
-	private Logger logger;
-	
-	@Listener
-	public void onServerInit(GameInitializationEvent event) {
-		Sponge.getCommandDispatcher().register(this, createReloadCommandSpec(), "actioncontrol");
-		
-		for(ActionHandler<?, ?> handler : ActionHandler.ALL) {
-			registerActionHandler(handler);
-		}
-		
-		loadConfig();
-	}
-	
-	private <E extends Event & Cancellable> void registerActionHandler(ActionHandler<E, ?> handler) {
-		Sponge.getGame().getEventManager().registerListener(this, handler.getEventClass(), handler);
-	}
-	
-	private CommandSpec createReloadCommandSpec() {
-		CommandSpec reloadCommand = CommandSpec.builder()
-				.description(Texts.of("Reload the ActionControl config"))
-				.permission("actioncontrol.reload")
-				.executor(new CommandExecutor() {
-			
-					@Override
-					public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-						boolean successful = loadConfig();
-						if(src instanceof Player) {
-							Player player = (Player) src;
-							if(successful) {
-								player.sendMessage(Texts.builder("Successfully reloaded the config file")
-										.color(TextColors.GREEN)
-										.build());
-							} else {
-								player.sendMessage(Texts.builder("An error occured while loading the config. " +
-															     "Check the console for details.")
-										.color(TextColors.RED)
-										.build());
-							}
-						}
-						return CommandResult.success();
-					}
-		}).build();
-		
-		return CommandSpec.builder().child(reloadCommand, "reload").build();
-	}
-	
-	private boolean loadConfig() {
-		try {
-			Category.getRegistry().loadCategories(privateConfigDir);
-			logger.info("Successfully loaded the config file");
-			return true;
-		} catch (ConfigParseException e) {
-			logger.error("An error occured while loading the config file.", e);
-			logger.info("Fix the config and reload the plugin or restart the server to make it work again.");
-			return false;
-		}
-	}
+public final class ActionControl {
+
+    @Inject
+    @ConfigDir(sharedRoot = false)
+    private Path privateConfigDir;
+
+    @Inject
+    private Logger logger;
+
+    @Listener
+    public void onServerInit(GameInitializationEvent event) {
+        Sponge.getCommandDispatcher().register(this, createReloadCommandSpec(), "actioncontrol");
+
+        for (ActionHandler<?, ?> handler : ActionHandler.ALL) {
+            registerActionHandler(handler);
+        }
+
+        loadConfig();
+    }
+
+    private <E extends Event & Cancellable> void registerActionHandler(ActionHandler<E, ?> handler) {
+        Sponge.getGame().getEventManager().registerListener(this, handler.getEventClass(), handler);
+    }
+
+    private CommandSpec createReloadCommandSpec() {
+        CommandSpec reloadCommand = CommandSpec.builder()
+                .description(Texts.of("Reload the ActionControl config"))
+                .permission("actioncontrol.reload")
+                .executor(new CommandExecutor() {
+
+            @Override
+            public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+                boolean successful = loadConfig();
+                if (src instanceof Player) {
+                    Player player = (Player) src;
+                    if (successful) {
+                        player.sendMessage(Texts.builder("Successfully reloaded the config file")
+                                .color(TextColors.GREEN)
+                                .build());
+                    } else {
+                        player.sendMessage(Texts.builder("An error occured while loading the config. "
+                                + "Check the console for details.")
+                                .color(TextColors.RED)
+                                .build());
+                    }
+                }
+                return CommandResult.success();
+            }
+        }).build();
+
+        return CommandSpec.builder().child(reloadCommand, "reload").build();
+    }
+
+    private boolean loadConfig() {
+        try {
+            Category.getRegistry().loadCategories(privateConfigDir);
+            logger.info("Successfully loaded the config file");
+            return true;
+        } catch (ConfigParseException e) {
+            logger.error("An error occured while loading the config file.", e);
+            logger.info("Fix the config and reload the plugin or restart the server to make it work again.");
+            return false;
+        }
+    }
 }

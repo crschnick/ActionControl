@@ -11,53 +11,53 @@ import org.spongepowered.api.event.Event;
 
 import com.google.gson.JsonElement;
 
-public abstract class ActionHandlerSimple<E extends Event & Cancellable> extends
-		ActionHandler<E, ActionSettingsSimple<E>> {
+public abstract class ActionHandlerSimple<E extends Event & Cancellable>
+        extends ActionHandler<E, ActionSettingsSimple<E>> {
 
-	private ActionFilterTemplate filter;
-	
-	private ActionSettingsSimple.Deserializer<E> settingsDeserializer;
+    private ActionFilterTemplate filter;
 
-	protected ActionHandlerSimple(String name, Class<E> eventClass) {
-		super(name, eventClass);
-		filter = createFilter();
-		settingsDeserializer = new ActionSettingsSimple.Deserializer<>(this);
-	}
-	
-	protected abstract ActionFilterTemplate createFilter();
+    private ActionSettingsSimple.Deserializer<E> settingsDeserializer;
 
-	@Override
-	public final void handle(E event) throws Exception {
-		Optional<Player> player = event.getCause().first(Player.class);
-		if(!player.isPresent()) {
-			return;
-		}
-		
-		Set<Category> categories = Category.getRegistry().getCategories(player.get());
-		if(categories.size() == 0) {
-			return;
-		}
-		
-		for(Category c : categories) {
-			Optional<ActionSettingsSimple<E>> settings = c.getActionSettings(this);
-			if(!settings.isPresent()) {
-				continue;
-			}
-			
-			boolean allowed = settings.get().isAllowed(event);
-			if(!allowed) {
-				event.setCancelled(true);
-				return;
-			}
-		}
-	}
+    protected ActionHandlerSimple(String name, Class<E> eventClass) {
+        super(name, eventClass);
+        filter = createFilter();
+        settingsDeserializer = new ActionSettingsSimple.Deserializer<>(this);
+    }
 
-	@Override
-	public ActionSettingsSimple<E> deserializeSettings(JsonElement json) {
-		return settingsDeserializer.deserialize(json);
-	}
+    protected abstract ActionFilterTemplate createFilter();
 
-	public ActionFilterTemplate getFilterTemplate() {
-		return filter;
-	}
+    @Override
+    public final void handle(E event) throws Exception {
+        Optional<Player> player = event.getCause().first(Player.class);
+        if (!player.isPresent()) {
+            return;
+        }
+
+        Set<Category> categories = Category.getRegistry().getCategories(player.get());
+        if (categories.size() == 0) {
+            return;
+        }
+
+        for (Category c : categories) {
+            Optional<ActionSettingsSimple<E>> settings = c.getActionSettings(this);
+            if (!settings.isPresent()) {
+                continue;
+            }
+
+            boolean allowed = settings.get().isAllowed(event);
+            if (!allowed) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+    }
+
+    @Override
+    public final ActionSettingsSimple<E> deserializeSettings(JsonElement json) {
+        return settingsDeserializer.deserialize(json);
+    }
+
+    public final ActionFilterTemplate getFilterTemplate() {
+        return filter;
+    }
 }

@@ -14,21 +14,20 @@ import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 public final class EntityInteractHandler<E extends InteractEntityEvent> extends ActionHandlerSimple<E> {
 
-	public EntityInteractHandler(String name, Class<E> eventClass) {
-		super(name, eventClass);
-	}
+    public EntityInteractHandler(String name, Class<E> eventClass) {
+        super(name, eventClass);
+    }
 
-	@Override
-	protected ActionFilterTemplate createFilter() {
-		return ActionFilterTemplate.builder()
-				.addOption(new ActionFilterOption<EntitySnapshot, InteractEntityEvent>("entityIds",
-						MatcherType.ENTITY, e -> e.getTargetEntity().createSnapshot()))
-				.addOption(new ActionFilterOption<ItemStackSnapshot, InteractEntityEvent>("itemIds",
-						MatcherType.ITEM, (e) -> {
-							Optional<ItemStack> inHand = e.getCause().first(Player.class).get().getItemInHand();
-							return inHand.isPresent() ? inHand.get().createSnapshot() : null;
-						}))
-				.build();
-	}
+    @Override
+    protected ActionFilterTemplate createFilter() {
+        return ActionFilterTemplate.builder()
+                .addOption(new ActionFilterOption<EntitySnapshot, InteractEntityEvent>("entityIds",
+                        MatcherType.ENTITY, e -> e.getTargetEntity().createSnapshot()))
+                .addOption(new ActionFilterOption<ItemStackSnapshot, InteractEntityEvent>("itemIds",
+                        MatcherType.ITEM, (e) -> {
+                                Optional<ItemStack> inHand = e.getCause().first(Player.class).get().getItemInHand();
+                                return inHand.isPresent() ? inHand.get().createSnapshot() : null;
+                        })).build();
+    }
 
 }

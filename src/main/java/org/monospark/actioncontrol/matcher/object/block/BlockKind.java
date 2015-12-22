@@ -8,21 +8,20 @@ import org.spongepowered.api.data.DataQuery;
 
 public final class BlockKind extends ObjectKind implements Matcher<BlockSnapshot> {
 
-	private BlockType type;
-	
-	BlockKind(BlockType type, int variant) {
-		super(type.getName(), variant);
-		this.type = type;
-	}
-	
-	@Override
-	public boolean matches(BlockSnapshot block) {
-		int meta = block.getState().toContainer().getInt(new DataQuery("UnsafeMeta")).get();
-		return type.equals(block.getState().getType()) && (meta & getVariant()) == getVariant();
-	}
-	
-	
-	public BlockType getBlockType() {
-		return this.type;
-	}
+    private BlockType type;
+
+    BlockKind(BlockType type, int variant) {
+        super(type.getName(), variant);
+        this.type = type;
+    }
+
+    @Override
+    public boolean matches(BlockSnapshot block) {
+        int meta = block.getState().toContainer().getInt(new DataQuery("UnsafeMeta")).get();
+        return type.equals(block.getState().getType()) && (meta & getVariant()) == getVariant();
+    }
+
+    public BlockType getBlockType() {
+        return this.type;
+    }
 }

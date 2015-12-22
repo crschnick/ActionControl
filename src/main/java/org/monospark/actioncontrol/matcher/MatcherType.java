@@ -14,27 +14,27 @@ import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 public final class MatcherType<T> {
 
-	public static final MatcherType<BlockSnapshot> BLOCK = new MatcherType<>(new BlockKindRegistry());
-	
-	public static final MatcherType<ItemStackSnapshot> ITEM = new MatcherType<>(new ItemKindRegistry());
-	
-	public static final MatcherType<ItemStackSnapshot> OBJECT = new MatcherType<>(new AllKindRegistry());
-	
-	public static final MatcherType<EntitySnapshot> ENTITY = new MatcherType<>(new EntityKindRegistry());
-	
-	public static final MatcherType<ItemEnchantment> ENCHANTMENT = new MatcherType<>(new EnchantmentKindRegistry());
-	
-	private MatcherCreator<T> creator;
+    public static final MatcherType<BlockSnapshot> BLOCK = new MatcherType<>(new BlockKindRegistry());
 
-	private MatcherType(MatcherCreator<T> creator) {
-		this.creator = creator;
-	}
+    public static final MatcherType<ItemStackSnapshot> ITEM = new MatcherType<>(new ItemKindRegistry());
 
-	public Matcher<T> getDefaultMatcher() {
-		return creator.getWildcardMatcher();
-	}
-	
-	public Optional<? extends Matcher<T>> getMatcher(String name) {
-		return creator.getMatcher(name);
-	}
+    public static final MatcherType<ItemStackSnapshot> OBJECT = new MatcherType<>(new AllKindRegistry());
+
+    public static final MatcherType<EntitySnapshot> ENTITY = new MatcherType<>(new EntityKindRegistry());
+
+    public static final MatcherType<ItemEnchantment> ENCHANTMENT = new MatcherType<>(new EnchantmentKindRegistry());
+
+    private MatcherCreator<T> creator;
+
+    private MatcherType(MatcherCreator<T> creator) {
+        this.creator = creator;
+    }
+
+    public Matcher<T> getDefaultMatcher() {
+        return creator.getWildcardMatcher();
+    }
+
+    public Optional<? extends Matcher<T>> getMatcher(String name) {
+        return creator.getMatcher(name);
+    }
 }

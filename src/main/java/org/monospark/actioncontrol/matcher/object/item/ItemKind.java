@@ -8,24 +8,24 @@ import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 public final class ItemKind extends ObjectKind implements Matcher<ItemStackSnapshot> {
 
-	private ItemType type;
-	
-	ItemKind(ItemType type, int variant) {
-		super(type.getName(), variant);
-		this.type = type;
-	}
+    private ItemType type;
 
-	@Override
-	public boolean matches(ItemStackSnapshot stack) {
-		if(stack == null) {
-			return false;
-		}
-		
-		int damage = stack.createStack().toContainer().getInt(new DataQuery("UnsafeDamage")).get();
-		return stack.getType() == type && (damage & getVariant()) == getVariant();
-	}
-	
-	public ItemType getItemType() {
-		return type;
-	}
+    ItemKind(ItemType type, int variant) {
+        super(type.getName(), variant);
+        this.type = type;
+    }
+
+    @Override
+    public boolean matches(ItemStackSnapshot stack) {
+        if (stack == null) {
+            return false;
+        }
+
+        int damage = stack.createStack().toContainer().getInt(new DataQuery("UnsafeDamage")).get();
+        return stack.getType() == type && (damage & getVariant()) == getVariant();
+    }
+
+    public ItemType getItemType() {
+        return type;
+    }
 }

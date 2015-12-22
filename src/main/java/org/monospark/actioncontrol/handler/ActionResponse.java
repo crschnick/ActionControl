@@ -4,8 +4,5 @@ import com.google.gson.annotations.SerializedName;
 
 public enum ActionResponse {
 
-	@SerializedName("allow")
-	ALLOW,
-	@SerializedName("deny")
-	DENY;
+    @SerializedName("allow") ALLOW, @SerializedName("deny") DENY;
 }

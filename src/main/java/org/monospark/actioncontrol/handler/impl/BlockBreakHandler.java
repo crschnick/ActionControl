@@ -14,20 +14,19 @@ import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 public final class BlockBreakHandler extends ActionHandlerSimple<ChangeBlockEvent.Break> {
 
-	public BlockBreakHandler() {
-		super("breakBlock", ChangeBlockEvent.Break.class);
-	}
+    public BlockBreakHandler() {
+        super("breakBlock", ChangeBlockEvent.Break.class);
+    }
 
-	@Override
-	protected ActionFilterTemplate createFilter() {
-		return ActionFilterTemplate.builder()
-				.addOption(new ActionFilterOption<BlockSnapshot, ChangeBlockEvent.Break>("blockIds",
-						MatcherType.BLOCK, e -> e.getTransactions().get(0).getOriginal()))
-				.addOption(new ActionFilterOption<ItemStackSnapshot, ChangeBlockEvent.Break>("toolIds",
-						MatcherType.ITEM, (e) -> {
-							Optional<ItemStack> inHand = e.getCause().first(Player.class).get().getItemInHand();
-							return inHand.isPresent() ? inHand.get().createSnapshot() : null;
-						}))
-				.build();
-	}
+    @Override
+    protected ActionFilterTemplate createFilter() {
+        return ActionFilterTemplate.builder()
+                .addOption(new ActionFilterOption<BlockSnapshot, ChangeBlockEvent.Break>("blockIds",
+                        MatcherType.BLOCK, e -> e.getTransactions().get(0).getOriginal()))
+                .addOption(new ActionFilterOption<ItemStackSnapshot, ChangeBlockEvent.Break>("toolIds",
+                        MatcherType.ITEM, (e) -> {
+                                Optional<ItemStack> inHand = e.getCause().first(Player.class).get().getItemInHand();
+                                return inHand.isPresent() ? inHand.get().createSnapshot() : null;
+                        })).build();
+    }
 }

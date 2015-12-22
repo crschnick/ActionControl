@@ -7,17 +7,17 @@ import org.monospark.actioncontrol.matcher.MatcherType;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
-public class UseItemHandler extends ActionHandlerSimple<UseItemStackEvent.Start> {
+public final class UseItemHandler extends ActionHandlerSimple<UseItemStackEvent.Start> {
 
-	public UseItemHandler() {
-		super("useItem", UseItemStackEvent.Start.class);
-	}
+    public UseItemHandler() {
+        super("useItem", UseItemStackEvent.Start.class);
+    }
 
-	@Override
-	protected ActionFilterTemplate createFilter() {
-		return ActionFilterTemplate.builder()
-				.addOption(new ActionFilterOption<ItemStackSnapshot, UseItemStackEvent.Start>("itemIds",
-						MatcherType.ITEM, e -> e.getItemStackInUse().getOriginal()))
-				.build();
-	}
+    @Override
+    protected ActionFilterTemplate createFilter() {
+        return ActionFilterTemplate.builder()
+                .addOption(new ActionFilterOption<ItemStackSnapshot, UseItemStackEvent.Start>("itemIds",
+                        MatcherType.ITEM, e -> e.getItemStackInUse().getOriginal()))
+                .build();
+    }
 }
