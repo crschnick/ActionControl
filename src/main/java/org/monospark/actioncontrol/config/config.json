@@ -1,0 +1,39 @@
+{
+	"categories": {
+		"exampleCategory": {
+			"breakBlock": {
+				"response": "deny",
+				"filter": {
+					"toolIds": ["diamond_axe"],
+					"blockIds": ["planks:1", "log:1-3", "crafting_table"]
+				}
+			},
+			"placeBlock": {
+				"response": "deny",
+				"filter": {
+					"blockIds": ["wool:1-5", "log", "stone:1"]
+				}
+			},
+			"rightClickBlock": {
+				"response": "deny",
+				"filter": {
+					"itemIds": ["*"],
+					"blockIds": ["lever"]
+				}
+			},
+			"rightClickEntity": {
+				"response": "deny",
+				"filter": {
+					"itemIds": ["shears"],
+					"entityIds": ["sheep"]
+				}
+			},
+			"useItem": {
+				"response": "deny",
+				"filter": {
+					"itemIds": ["diamond_sword"]
+				}
+			}
+		}
+	}
+}
