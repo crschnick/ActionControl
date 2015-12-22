@@ -28,7 +28,7 @@ public final class CategoryRegistry {
         }
 
         return allCategories.stream()
-                .filter(c -> /* p.hasPermission(PERMISSION_BASE + c.getName()) */ true)
+                .filter(c -> p.hasPermission(PERMISSION_BASE + c.getName()))
                 .collect(Collectors.toSet());
     }
 }
