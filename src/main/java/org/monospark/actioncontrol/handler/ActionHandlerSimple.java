@@ -34,6 +34,7 @@ public abstract class ActionHandlerSimple<E extends Event & Cancellable>
         }
 
         Set<Category> categories = Category.getRegistry().getCategories(player.get());
+        System.out.println(categories.size());
         if (categories.size() == 0) {
             return;
         }

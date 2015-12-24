@@ -5,8 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.monospark.actioncontrol.category.Category;
+import org.monospark.actioncontrol.category.Category.MatchType;
 
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
@@ -47,10 +50,27 @@ public final class ConfigParser {
         return createCategories(config);
     }
 
+    private static final Pattern CATEGORY_NAME_REGEX = Pattern.compile("^(?:(except\\((\\w+))\\)|(\\w+))$");
+    private static final int EXCEPT_WITH_NAME = 1;
+    private static final int EXCEPT_CATEGORY_NAME = 2;
+    private static final int SIMPLE_CATEGORY_NAME = 3;
+
     private static Set<Category> createCategories(Config config) {
         Set<Category> categories = Sets.newHashSet();
         for (Entry<String, ConfigCategory> entry : config.getCategories().entrySet()) {
-            categories.add(new Category(entry.getKey(), entry.getValue().getSettings()));
+            Matcher nameMatcher = CATEGORY_NAME_REGEX.matcher(entry.getKey());
+            if (!nameMatcher.matches()) {
+                throw new JsonParseException("Invalid category name: " + entry.getKey());
+            }
+
+            boolean isExcept = nameMatcher.group(EXCEPT_WITH_NAME) != null;
+            if (isExcept) {
+                categories.add(new Category(nameMatcher.group(EXCEPT_CATEGORY_NAME),
+                        MatchType.EXCEPT, entry.getValue().getSettings()));
+            } else {
+                categories.add(new Category(nameMatcher.group(SIMPLE_CATEGORY_NAME),
+                        MatchType.SIMPLE, entry.getValue().getSettings()));
+            }
         }
         return categories;
     }
