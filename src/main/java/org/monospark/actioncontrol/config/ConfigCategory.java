@@ -4,10 +4,11 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 
-import org.monospark.actioncontrol.handler.ActionHandler;
-import org.monospark.actioncontrol.handler.ActionSettings;
+import org.monospark.actioncontrol.rules.ActionRule;
+import org.monospark.actioncontrol.rules.ActionSettings;
+
+import java.util.Optional;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -17,13 +18,13 @@ import com.google.gson.JsonParseException;
 
 final class ConfigCategory {
 
-    private Map<ActionHandler<?, ?>, ActionSettings> settings;
+    private Map<ActionRule<?, ?>, ActionSettings> settings;
 
-    private ConfigCategory(Map<ActionHandler<?, ?>, ActionSettings> settings) {
+    private ConfigCategory(Map<ActionRule<?, ?>, ActionSettings> settings) {
         this.settings = settings;
     }
 
-    Map<ActionHandler<?, ?>, ActionSettings> getSettings() {
+    Map<ActionRule<?, ?>, ActionSettings> getSettings() {
         return settings;
     }
 
@@ -33,15 +34,15 @@ final class ConfigCategory {
         public ConfigCategory deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
             JsonObject object = json.getAsJsonObject();
-            Map<ActionHandler<?, ?>, ActionSettings> allSettings = new HashMap<ActionHandler<?, ?>, ActionSettings>();
+            Map<ActionRule<?, ?>, ActionSettings> allSettings = new HashMap<ActionRule<?, ?>, ActionSettings>();
             for (Entry<String, JsonElement> entry : object.entrySet()) {
-                Optional<ActionHandler<?, ?>> handler = ActionHandler.byName(entry.getKey());
-                if (handler == null) {
+                Optional<ActionRule<?, ?>> rule = ActionRule.byName(entry.getKey());
+                if (rule == null) {
                     throw new JsonParseException("Unknown action rule: " + entry.getKey());
                 }
 
-                ActionSettings settings = handler.get().deserializeSettings(entry.getValue());
-                allSettings.put(handler.get(), settings);
+                ActionSettings settings = rule.get().deserializeSettings(entry.getValue());
+                allSettings.put(rule.get(), settings);
             }
             return new ConfigCategory(allSettings);
         }

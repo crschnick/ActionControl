@@ -1,4 +1,4 @@
-package org.monospark.actioncontrol.handler;
+package org.monospark.actioncontrol.rules;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -6,12 +6,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.monospark.actioncontrol.handler.filter.ActionFilter;
-import org.monospark.actioncontrol.handler.filter.ActionFilterOption;
-import org.monospark.actioncontrol.handler.filter.ActionFilterTemplate;
 import org.monospark.actioncontrol.matcher.Matcher;
 import org.monospark.actioncontrol.matcher.MatcherAmount;
 import org.monospark.actioncontrol.matcher.MatcherType;
+import org.monospark.actioncontrol.rules.filter.ActionFilter;
+import org.monospark.actioncontrol.rules.filter.ActionFilterOption;
+import org.monospark.actioncontrol.rules.filter.ActionFilterTemplate;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 
@@ -48,9 +48,9 @@ public final class ActionSettingsSimple<E extends Event> extends ActionSettings 
 
     static final class Deserializer<E extends Event & Cancellable> {
 
-        private ActionHandlerSimple<E> handler;
+        private ActionRuleSimple<E> handler;
 
-        Deserializer(ActionHandlerSimple<E> handler) {
+        Deserializer(ActionRuleSimple<E> handler) {
             this.handler = handler;
         }
 

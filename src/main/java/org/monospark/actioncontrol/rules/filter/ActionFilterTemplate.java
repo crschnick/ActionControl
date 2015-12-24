@@ -1,4 +1,4 @@
-package org.monospark.actioncontrol.handler.filter;
+package org.monospark.actioncontrol.rules.filter;
 
 import java.util.HashSet;
 import java.util.Set;

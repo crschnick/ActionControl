@@ -1,24 +1,24 @@
-package org.monospark.actioncontrol.handler;
+package org.monospark.actioncontrol.rules;
 
 import java.util.Optional;
 import java.util.Set;
 
 import org.monospark.actioncontrol.category.Category;
-import org.monospark.actioncontrol.handler.filter.ActionFilterTemplate;
+import org.monospark.actioncontrol.rules.filter.ActionFilterTemplate;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 
 import com.google.gson.JsonElement;
 
-public abstract class ActionHandlerSimple<E extends Event & Cancellable>
-        extends ActionHandler<E, ActionSettingsSimple<E>> {
+public abstract class ActionRuleSimple<E extends Event & Cancellable>
+        extends ActionRule<E, ActionSettingsSimple<E>> {
 
     private ActionFilterTemplate filter;
 
     private ActionSettingsSimple.Deserializer<E> settingsDeserializer;
 
-    protected ActionHandlerSimple(String name, Class<E> eventClass) {
+    protected ActionRuleSimple(String name, Class<E> eventClass) {
         super(name, eventClass);
         filter = createFilter();
         settingsDeserializer = new ActionSettingsSimple.Deserializer<>(this);

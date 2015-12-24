@@ -4,7 +4,7 @@ import java.nio.file.Path;
 
 import org.monospark.actioncontrol.category.Category;
 import org.monospark.actioncontrol.config.ConfigParseException;
-import org.monospark.actioncontrol.handler.ActionHandler;
+import org.monospark.actioncontrol.rules.ActionRule;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
@@ -39,15 +39,15 @@ public final class ActionControl {
     public void onServerInit(GameInitializationEvent event) {
         Sponge.getCommandDispatcher().register(this, createReloadCommandSpec(), "actioncontrol");
 
-        for (ActionHandler<?, ?> handler : ActionHandler.ALL) {
-            registerActionHandler(handler);
+        for (ActionRule<?, ?> rule : ActionRule.ALL) {
+            registerActionRule(rule);
         }
 
         loadConfig();
     }
 
-    private <E extends Event & Cancellable> void registerActionHandler(ActionHandler<E, ?> handler) {
-        Sponge.getGame().getEventManager().registerListener(this, handler.getEventClass(), handler);
+    private <E extends Event & Cancellable> void registerActionRule(ActionRule<E, ?> rule) {
+        Sponge.getGame().getEventManager().registerListener(this, rule.getEventClass(), rule);
     }
 
     private CommandSpec createReloadCommandSpec() {

@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.monospark.actioncontrol.handler.ActionHandler;
-import org.monospark.actioncontrol.handler.ActionSettings;
+import org.monospark.actioncontrol.rules.ActionRule;
+import org.monospark.actioncontrol.rules.ActionSettings;
 
 public final class Category {
 
@@ -19,9 +19,9 @@ public final class Category {
 
     private MatchType matchType;
 
-    private Map<ActionHandler<?, ?>, ActionSettings> settings;
+    private Map<ActionRule<?, ?>, ActionSettings> settings;
 
-    public Category(String name, MatchType matchType, Map<ActionHandler<?, ?>, ActionSettings> settings) {
+    public Category(String name, MatchType matchType, Map<ActionRule<?, ?>, ActionSettings> settings) {
         this.name = name;
         this.matchType = matchType;
         this.settings = settings;
@@ -36,8 +36,8 @@ public final class Category {
     }
 
     @SuppressWarnings("unchecked")
-    public <S extends ActionSettings> Optional<S> getActionSettings(ActionHandler<?, S> handler) {
-        return Optional.ofNullable((S) settings.get(handler));
+    public <S extends ActionSettings> Optional<S> getActionSettings(ActionRule<?, S> rule) {
+        return Optional.ofNullable((S) settings.get(rule));
     }
 
     public enum MatchType {

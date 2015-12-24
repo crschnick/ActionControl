@@ -1,15 +1,15 @@
-package org.monospark.actioncontrol.handler.impl;
+package org.monospark.actioncontrol.rules.impl;
 
-import org.monospark.actioncontrol.handler.ActionHandlerSimple;
-import org.monospark.actioncontrol.handler.filter.ActionFilterOption;
-import org.monospark.actioncontrol.handler.filter.ActionFilterTemplate;
 import org.monospark.actioncontrol.matcher.MatcherType;
+import org.monospark.actioncontrol.rules.ActionRuleSimple;
+import org.monospark.actioncontrol.rules.filter.ActionFilterOption;
+import org.monospark.actioncontrol.rules.filter.ActionFilterTemplate;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 
-public final class BlockPlaceHandler extends ActionHandlerSimple<ChangeBlockEvent.Place> {
+public final class BlockPlaceRule extends ActionRuleSimple<ChangeBlockEvent.Place> {
 
-    public BlockPlaceHandler() {
+    public BlockPlaceRule() {
         super("placeBlock", ChangeBlockEvent.Place.class);
     }
 

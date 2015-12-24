@@ -1,20 +1,20 @@
-package org.monospark.actioncontrol.handler.impl;
+package org.monospark.actioncontrol.rules.impl;
 
 import java.util.Optional;
 
-import org.monospark.actioncontrol.handler.ActionHandlerSimple;
-import org.monospark.actioncontrol.handler.filter.ActionFilterOption;
-import org.monospark.actioncontrol.handler.filter.ActionFilterTemplate;
 import org.monospark.actioncontrol.matcher.MatcherType;
+import org.monospark.actioncontrol.rules.ActionRuleSimple;
+import org.monospark.actioncontrol.rules.filter.ActionFilterOption;
+import org.monospark.actioncontrol.rules.filter.ActionFilterTemplate;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
-public final class BlockBreakHandler extends ActionHandlerSimple<ChangeBlockEvent.Break> {
+public final class BlockBreakRule extends ActionRuleSimple<ChangeBlockEvent.Break> {
 
-    public BlockBreakHandler() {
+    public BlockBreakRule() {
         super("breakBlock", ChangeBlockEvent.Break.class);
     }
 
