@@ -14,20 +14,28 @@ import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 public final class MatcherType<T> {
 
-    public static final MatcherType<BlockSnapshot> BLOCK = new MatcherType<>(new BlockKindRegistry());
+    public static final MatcherType<BlockSnapshot> BLOCK = new MatcherType<>("block", new BlockKindRegistry());
 
-    public static final MatcherType<ItemStackSnapshot> ITEM = new MatcherType<>(new ItemKindRegistry());
+    public static final MatcherType<ItemStackSnapshot> ITEM = new MatcherType<>("item", new ItemKindRegistry());
 
-    public static final MatcherType<ItemStackSnapshot> OBJECT = new MatcherType<>(new AllKindRegistry());
+    public static final MatcherType<ItemStackSnapshot> OBJECT = new MatcherType<>("object", new AllKindRegistry());
 
-    public static final MatcherType<EntitySnapshot> ENTITY = new MatcherType<>(new EntityKindRegistry());
+    public static final MatcherType<EntitySnapshot> ENTITY = new MatcherType<>("entity", new EntityKindRegistry());
 
-    public static final MatcherType<ItemEnchantment> ENCHANTMENT = new MatcherType<>(new EnchantmentKindRegistry());
+    public static final MatcherType<ItemEnchantment> ENCHANTMENT = new MatcherType<>("enchantment",
+            new EnchantmentKindRegistry());
+
+    private String name;
 
     private MatcherCreator<T> creator;
 
-    private MatcherType(MatcherCreator<T> creator) {
+    private MatcherType(String name, MatcherCreator<T> creator) {
+        this.name = name;
         this.creator = creator;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Matcher<T> getDefaultMatcher() {

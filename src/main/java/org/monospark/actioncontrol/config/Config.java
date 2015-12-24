@@ -29,6 +29,10 @@ final class Config {
         public Config deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
             JsonObject object = json.getAsJsonObject().getAsJsonObject("categories");
+            if (object == null) {
+                throw new JsonParseException("Missing \"categories\" property");
+            }
+
             Map<String, ConfigCategory> categories = new HashMap<String, ConfigCategory>();
             for (Entry<String, JsonElement> entry : object.entrySet()) {
                 JsonObject categoryObject = entry.getValue().getAsJsonObject();

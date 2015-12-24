@@ -3,6 +3,8 @@ package org.monospark.actioncontrol.config;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.monospark.actioncontrol.handler.ActionHandler;
 import org.monospark.actioncontrol.handler.ActionSettings;
@@ -32,14 +34,14 @@ final class ConfigCategory {
                 throws JsonParseException {
             JsonObject object = json.getAsJsonObject();
             Map<ActionHandler<?, ?>, ActionSettings> allSettings = new HashMap<ActionHandler<?, ?>, ActionSettings>();
-            for (ActionHandler<?, ?> handler : ActionHandler.ALL) {
-                JsonElement settingsElement = object.get(handler.getName());
-                if (settingsElement == null) {
-                    continue;
+            for (Entry<String, JsonElement> entry : object.entrySet()) {
+                Optional<ActionHandler<?, ?>> handler = ActionHandler.byName(entry.getKey());
+                if (handler == null) {
+                    throw new JsonParseException("Unknown action rule: " + entry.getKey());
                 }
 
-                ActionSettings settings = handler.deserializeSettings(settingsElement);
-                allSettings.put(handler, settings);
+                ActionSettings settings = handler.get().deserializeSettings(entry.getValue());
+                allSettings.put(handler.get(), settings);
             }
             return new ConfigCategory(allSettings);
         }
