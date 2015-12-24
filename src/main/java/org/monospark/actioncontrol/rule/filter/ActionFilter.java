@@ -1,4 +1,4 @@
-package org.monospark.actioncontrol.rules.filter;
+package org.monospark.actioncontrol.rule.filter;
 
 import java.util.Map;
 import java.util.Map.Entry;

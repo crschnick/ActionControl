@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.monospark.actioncontrol.rules.ActionRule;
-import org.monospark.actioncontrol.rules.ActionSettings;
+import org.monospark.actioncontrol.rule.ActionRule;
+import org.monospark.actioncontrol.rule.ActionSettings;
 
 public final class Category {
 

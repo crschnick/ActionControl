@@ -1,4 +1,4 @@
-package org.monospark.actioncontrol.rules;
+package org.monospark.actioncontrol.rule;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,9 +9,9 @@ import java.util.Set;
 import org.monospark.actioncontrol.matcher.Matcher;
 import org.monospark.actioncontrol.matcher.MatcherAmount;
 import org.monospark.actioncontrol.matcher.MatcherType;
-import org.monospark.actioncontrol.rules.filter.ActionFilter;
-import org.monospark.actioncontrol.rules.filter.ActionFilterOption;
-import org.monospark.actioncontrol.rules.filter.ActionFilterTemplate;
+import org.monospark.actioncontrol.rule.filter.ActionFilter;
+import org.monospark.actioncontrol.rule.filter.ActionFilterOption;
+import org.monospark.actioncontrol.rule.filter.ActionFilterTemplate;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 

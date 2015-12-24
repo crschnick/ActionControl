@@ -1,4 +1,4 @@
-package org.monospark.actioncontrol.rules;
+package org.monospark.actioncontrol.rule;
 
 public abstract class ActionSettings {
 

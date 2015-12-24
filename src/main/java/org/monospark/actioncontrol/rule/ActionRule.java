@@ -1,14 +1,14 @@
-package org.monospark.actioncontrol.rules;
+package org.monospark.actioncontrol.rule;
 
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.monospark.actioncontrol.rules.impl.BlockBreakRule;
-import org.monospark.actioncontrol.rules.impl.BlockInteractRule;
-import org.monospark.actioncontrol.rules.impl.BlockPlaceRule;
-import org.monospark.actioncontrol.rules.impl.EntityInteractRule;
-import org.monospark.actioncontrol.rules.impl.UseItemRule;
+import org.monospark.actioncontrol.rule.impl.BlockBreakRule;
+import org.monospark.actioncontrol.rule.impl.BlockInteractRule;
+import org.monospark.actioncontrol.rule.impl.BlockPlaceRule;
+import org.monospark.actioncontrol.rule.impl.EntityInteractRule;
+import org.monospark.actioncontrol.rule.impl.UseItemRule;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.EventListener;

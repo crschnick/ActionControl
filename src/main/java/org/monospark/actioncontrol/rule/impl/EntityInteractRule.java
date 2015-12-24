@@ -1,11 +1,11 @@
-package org.monospark.actioncontrol.rules.impl;
+package org.monospark.actioncontrol.rule.impl;
 
 import java.util.Optional;
 
 import org.monospark.actioncontrol.matcher.MatcherType;
-import org.monospark.actioncontrol.rules.ActionRuleSimple;
-import org.monospark.actioncontrol.rules.filter.ActionFilterOption;
-import org.monospark.actioncontrol.rules.filter.ActionFilterTemplate;
+import org.monospark.actioncontrol.rule.ActionRuleSimple;
+import org.monospark.actioncontrol.rule.filter.ActionFilterOption;
+import org.monospark.actioncontrol.rule.filter.ActionFilterTemplate;
 import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.entity.InteractEntityEvent;

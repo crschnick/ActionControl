@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.monospark.actioncontrol.rules.ActionRule;
-import org.monospark.actioncontrol.rules.ActionSettings;
+import org.monospark.actioncontrol.rule.ActionRule;
+import org.monospark.actioncontrol.rule.ActionSettings;
 
 import java.util.Optional;
 

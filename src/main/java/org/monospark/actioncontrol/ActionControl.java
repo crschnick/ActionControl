@@ -4,7 +4,7 @@ import java.nio.file.Path;
 
 import org.monospark.actioncontrol.category.Category;
 import org.monospark.actioncontrol.config.ConfigParseException;
-import org.monospark.actioncontrol.rules.ActionRule;
+import org.monospark.actioncontrol.rule.ActionRule;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;

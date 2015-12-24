@@ -1,4 +1,4 @@
-package org.monospark.actioncontrol.rules;
+package org.monospark.actioncontrol.rule;
 
 import com.google.gson.annotations.SerializedName;
 

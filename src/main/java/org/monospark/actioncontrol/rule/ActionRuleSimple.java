@@ -1,10 +1,10 @@
-package org.monospark.actioncontrol.rules;
+package org.monospark.actioncontrol.rule;
 
 import java.util.Optional;
 import java.util.Set;
 
 import org.monospark.actioncontrol.category.Category;
-import org.monospark.actioncontrol.rules.filter.ActionFilterTemplate;
+import org.monospark.actioncontrol.rule.filter.ActionFilterTemplate;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
