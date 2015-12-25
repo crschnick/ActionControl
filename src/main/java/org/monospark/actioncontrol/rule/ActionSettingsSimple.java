@@ -12,6 +12,7 @@ import org.monospark.actioncontrol.matcher.MatcherType;
 import org.monospark.actioncontrol.rule.filter.ActionFilter;
 import org.monospark.actioncontrol.rule.filter.ActionFilterOption;
 import org.monospark.actioncontrol.rule.filter.ActionFilterTemplate;
+import org.monospark.actioncontrol.rule.response.ActionResponse;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 

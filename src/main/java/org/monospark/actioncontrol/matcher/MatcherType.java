@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import org.monospark.actioncontrol.matcher.enchantment.EnchantmentKindRegistry;
 import org.monospark.actioncontrol.matcher.entity.EntityKindRegistry;
-import org.monospark.actioncontrol.matcher.object.all.AllKindRegistry;
-import org.monospark.actioncontrol.matcher.object.block.BlockKindRegistry;
-import org.monospark.actioncontrol.matcher.object.item.ItemKindRegistry;
+import org.monospark.actioncontrol.matcher.object.AllObjectsMatcherCreator;
+import org.monospark.actioncontrol.matcher.object.block.BlockMatcherCreator;
+import org.monospark.actioncontrol.matcher.object.item.ItemMatcherCreator;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.entity.EntitySnapshot;
@@ -14,11 +14,15 @@ import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 public final class MatcherType<T> {
 
-    public static final MatcherType<BlockSnapshot> BLOCK = new MatcherType<>("block", new BlockKindRegistry());
+    public static final MatcherType<BlockSnapshot> BLOCK = new MatcherType<>("block", new BlockMatcherCreator());
 
-    public static final MatcherType<ItemStackSnapshot> ITEM = new MatcherType<>("item", new ItemKindRegistry());
+    public static final MatcherType<ItemStackSnapshot> ITEM = new MatcherType<>("item", new ItemMatcherCreator(false));
 
-    public static final MatcherType<ItemStackSnapshot> OBJECT = new MatcherType<>("object", new AllKindRegistry());
+    public static final MatcherType<ItemStackSnapshot> ITEM_AND_HAND = new MatcherType<>("item",
+            new ItemMatcherCreator(true));
+
+    public static final MatcherType<ItemStackSnapshot> OBJECT = new MatcherType<>("object",
+            new AllObjectsMatcherCreator());
 
     public static final MatcherType<EntitySnapshot> ENTITY = new MatcherType<>("entity", new EntityKindRegistry());
 

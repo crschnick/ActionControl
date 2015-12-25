@@ -24,7 +24,7 @@ public final class EntityInteractRule<E extends InteractEntityEvent> extends Act
                 .addOption(new ActionFilterOption<EntitySnapshot, InteractEntityEvent>("entityIds",
                         MatcherType.ENTITY, e -> e.getTargetEntity().createSnapshot()))
                 .addOption(new ActionFilterOption<ItemStackSnapshot, InteractEntityEvent>("itemIds",
-                        MatcherType.ITEM, (e) -> {
+                        MatcherType.ITEM_AND_HAND, (e) -> {
                                 Optional<ItemStack> inHand = e.getCause().first(Player.class).get().getItemInHand();
                                 return inHand.isPresent() ? inHand.get().createSnapshot() : null;
                         })).build();

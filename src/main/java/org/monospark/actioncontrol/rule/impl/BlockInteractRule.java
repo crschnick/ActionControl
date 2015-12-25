@@ -24,7 +24,7 @@ public final class BlockInteractRule<E extends InteractBlockEvent> extends Actio
                 .addOption(new ActionFilterOption<BlockSnapshot, InteractBlockEvent>("blockIds",
                         MatcherType.BLOCK, e -> e.getTargetBlock()))
                 .addOption(new ActionFilterOption<ItemStackSnapshot, InteractBlockEvent>("itemIds",
-                        MatcherType.ITEM, (e) -> {
+                        MatcherType.ITEM_AND_HAND, (e) -> {
                                 Optional<ItemStack> inHand = e.getCause().first(Player.class).get().getItemInHand();
                                 return inHand.isPresent() ? inHand.get().createSnapshot() : null;
                         })).build();

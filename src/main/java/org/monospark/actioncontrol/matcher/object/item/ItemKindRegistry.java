@@ -6,15 +6,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.monospark.actioncontrol.matcher.Matcher;
 import org.monospark.actioncontrol.matcher.object.ObjectKindRegistry;
 import org.spongepowered.api.CatalogTypes;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
-public final class ItemKindRegistry extends ObjectKindRegistry<ItemKind, ItemStackSnapshot> {
+public final class ItemKindRegistry extends ObjectKindRegistry<ItemKind> {
 
     private static final Map<ItemType, int[]> VANILLA_ITEM_VARIANTS = getVanillaItemVariants();
 
@@ -42,7 +40,7 @@ public final class ItemKindRegistry extends ObjectKindRegistry<ItemKind, ItemSta
 
     private final Set<ItemKind> allKinds;
 
-    public ItemKindRegistry() {
+    ItemKindRegistry() {
         vanillaNames = new HashSet<String>();
         allKinds = new HashSet<ItemKind>();
     }
@@ -66,32 +64,6 @@ public final class ItemKindRegistry extends ObjectKindRegistry<ItemKind, ItemSta
                 allKinds.add(new ItemKind(type, 0));
             }
         }
-    }
-
-    @Override
-    protected Matcher<ItemStackSnapshot> createWildcardMatcher() {
-        return new Matcher<ItemStackSnapshot>() {
-
-            @Override
-            public boolean matches(ItemStackSnapshot o) {
-                if (o == null) {
-                    return true;
-                }
-
-                return !o.getType().getBlock().isPresent();
-            }
-        };
-    }
-
-    @Override
-    protected void addCustomMatchers(Map<String, Matcher<ItemStackSnapshot>> matchers) {
-        matchers.put("none", new Matcher<ItemStackSnapshot>() {
-
-            @Override
-            public boolean matches(ItemStackSnapshot o) {
-                return o == null;
-            }
-        });
     }
 
     @Override

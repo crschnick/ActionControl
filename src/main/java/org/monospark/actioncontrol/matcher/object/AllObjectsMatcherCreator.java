@@ -1,4 +1,4 @@
-package org.monospark.actioncontrol.matcher.object.all;
+package org.monospark.actioncontrol.matcher.object;
 
 import java.util.Optional;
 
@@ -11,7 +11,7 @@ import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
-public final class AllKindRegistry extends MatcherCreator<ItemStackSnapshot> {
+public final class AllObjectsMatcherCreator extends MatcherCreator<ItemStackSnapshot> {
 
     @Override
     protected Matcher<ItemStackSnapshot> createWildcardMatcher() {

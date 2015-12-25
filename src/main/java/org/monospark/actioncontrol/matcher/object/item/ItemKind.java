@@ -8,6 +8,12 @@ import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 public final class ItemKind extends ObjectKind implements Matcher<ItemStackSnapshot> {
 
+    private static final ItemKindRegistry REGISTRY = new ItemKindRegistry();
+
+    public static ItemKindRegistry getRegistry() {
+        return REGISTRY;
+    }
+
     private ItemType type;
 
     ItemKind(ItemType type, int variant) {

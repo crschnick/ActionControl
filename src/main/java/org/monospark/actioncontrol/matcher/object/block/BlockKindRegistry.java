@@ -4,19 +4,17 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.monospark.actioncontrol.matcher.Matcher;
 import org.monospark.actioncontrol.matcher.object.ObjectKindRegistry;
 import org.spongepowered.api.CatalogTypes;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.trait.BlockTrait;
 
-public final class BlockKindRegistry extends ObjectKindRegistry<BlockKind, BlockSnapshot> {
+public final class BlockKindRegistry extends ObjectKindRegistry<BlockKind> {
 
     private Set<BlockKind> allKinds;
 
-    public BlockKindRegistry() {
+    BlockKindRegistry() {
         this.allKinds = new HashSet<BlockKind>();
     }
 
@@ -33,17 +31,6 @@ public final class BlockKindRegistry extends ObjectKindRegistry<BlockKind, Block
                 allKinds.add(kind);
             }
         }
-    }
-
-    @Override
-    protected Matcher<BlockSnapshot> createWildcardMatcher() {
-        return new Matcher<BlockSnapshot>() {
-
-            @Override
-            public boolean matches(BlockSnapshot o) {
-                return true;
-            }
-        };
     }
 
     @Override

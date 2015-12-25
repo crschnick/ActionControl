@@ -8,6 +8,12 @@ import org.spongepowered.api.data.DataQuery;
 
 public final class BlockKind extends ObjectKind implements Matcher<BlockSnapshot> {
 
+    private static final BlockKindRegistry REGISTRY = new BlockKindRegistry();
+
+    public static BlockKindRegistry getRegistry() {
+        return REGISTRY;
+    }
+
     private BlockType type;
 
     BlockKind(BlockType type, int variant) {

@@ -24,7 +24,7 @@ public final class BlockBreakRule extends ActionRuleSimple<ChangeBlockEvent.Brea
                 .addOption(new ActionFilterOption<BlockSnapshot, ChangeBlockEvent.Break>("blockIds",
                         MatcherType.BLOCK, e -> e.getTransactions().get(0).getOriginal()))
                 .addOption(new ActionFilterOption<ItemStackSnapshot, ChangeBlockEvent.Break>("toolIds",
-                        MatcherType.ITEM, (e) -> {
+                        MatcherType.ITEM_AND_HAND, (e) -> {
                                 Optional<ItemStack> inHand = e.getCause().first(Player.class).get().getItemInHand();
                                 return inHand.isPresent() ? inHand.get().createSnapshot() : null;
                         })).build();
