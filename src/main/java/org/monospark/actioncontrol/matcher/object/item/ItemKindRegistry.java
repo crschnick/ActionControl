@@ -38,14 +38,12 @@ public final class ItemKindRegistry extends ObjectKindRegistry<ItemKind> {
 
     private final Set<String> vanillaNames;
 
-    private final Set<ItemKind> allKinds;
-
     ItemKindRegistry() {
         vanillaNames = new HashSet<String>();
-        allKinds = new HashSet<ItemKind>();
     }
 
-    protected void init() {
+    @Override
+    protected void initRegistry() {
         for (ItemType type : Sponge.getRegistry().getAllOf(CatalogTypes.ITEM_TYPE)) {
             if (type.getBlock().isPresent()) {
                 continue;
@@ -67,7 +65,7 @@ public final class ItemKindRegistry extends ObjectKindRegistry<ItemKind> {
     }
 
     @Override
-    protected Optional<ItemKind> getKind(String baseName, int variant) {
+    protected Optional<ItemKind> get(String baseName, int variant) {
         if (isVanillaItem(baseName)) {
             return getItemKind(baseName, variant);
         } else {

@@ -6,6 +6,12 @@ import org.spongepowered.api.item.Enchantment;
 
 public final class EnchantmentKind implements Matcher<ItemEnchantment> {
 
+    private static final EnchantmentKindRegistry REGISTRY = new EnchantmentKindRegistry();
+
+    public static EnchantmentKindRegistry getRegistry() {
+        return REGISTRY;
+    }
+
     private Enchantment enchantment;
 
     private int level;

@@ -2,8 +2,8 @@ package org.monospark.actioncontrol.matcher;
 
 import java.util.Optional;
 
-import org.monospark.actioncontrol.matcher.enchantment.EnchantmentKindRegistry;
-import org.monospark.actioncontrol.matcher.entity.EntityKindRegistry;
+import org.monospark.actioncontrol.matcher.enchantment.EnchantmentMatcherCreator;
+import org.monospark.actioncontrol.matcher.entity.EntityMatcherCreator;
 import org.monospark.actioncontrol.matcher.object.AllObjectsMatcherCreator;
 import org.monospark.actioncontrol.matcher.object.block.BlockMatcherCreator;
 import org.monospark.actioncontrol.matcher.object.item.ItemMatcherCreator;
@@ -24,10 +24,10 @@ public final class MatcherType<T> {
     public static final MatcherType<ItemStackSnapshot> OBJECT = new MatcherType<>("object",
             new AllObjectsMatcherCreator());
 
-    public static final MatcherType<EntitySnapshot> ENTITY = new MatcherType<>("entity", new EntityKindRegistry());
+    public static final MatcherType<EntitySnapshot> ENTITY = new MatcherType<>("entity", new EntityMatcherCreator());
 
     public static final MatcherType<ItemEnchantment> ENCHANTMENT = new MatcherType<>("enchantment",
-            new EnchantmentKindRegistry());
+            new EnchantmentMatcherCreator());
 
     private String name;
 

@@ -6,6 +6,12 @@ import org.spongepowered.api.entity.EntityType;
 
 public final class EntityKind implements Matcher<EntitySnapshot> {
 
+    private static final EntityKindRegistry REGISTRY = new EntityKindRegistry();
+
+    public static EntityKindRegistry getRegistry() {
+        return REGISTRY;
+    }
+
     private EntityType type;
 
     EntityKind(EntityType type) {
