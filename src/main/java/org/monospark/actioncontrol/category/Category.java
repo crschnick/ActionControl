@@ -6,6 +6,8 @@ import java.util.function.Function;
 
 import org.monospark.actioncontrol.rule.ActionRule;
 import org.monospark.actioncontrol.rule.ActionSettings;
+import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.Event;
 
 public final class Category {
 
@@ -19,9 +21,9 @@ public final class Category {
 
     private MatchType matchType;
 
-    private Map<ActionRule<?, ?>, ActionSettings> settings;
+    private Map<ActionRule<?>, ActionSettings<?>> settings;
 
-    public Category(String name, MatchType matchType, Map<ActionRule<?, ?>, ActionSettings> settings) {
+    public Category(String name, MatchType matchType, Map<ActionRule<?>, ActionSettings<?>> settings) {
         this.name = name;
         this.matchType = matchType;
         this.settings = settings;
@@ -36,8 +38,8 @@ public final class Category {
     }
 
     @SuppressWarnings("unchecked")
-    public <S extends ActionSettings> Optional<S> getActionSettings(ActionRule<?, S> rule) {
-        return Optional.ofNullable((S) settings.get(rule));
+    public <E extends Event & Cancellable> Optional<ActionSettings<E>> getActionSettings(ActionRule<E> rule) {
+        return Optional.ofNullable((ActionSettings<E>) settings.get(rule));
     }
 
     public enum MatchType {

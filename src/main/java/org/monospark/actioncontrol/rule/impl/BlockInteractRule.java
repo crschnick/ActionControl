@@ -3,7 +3,7 @@ package org.monospark.actioncontrol.rule.impl;
 import java.util.Optional;
 
 import org.monospark.actioncontrol.matcher.MatcherType;
-import org.monospark.actioncontrol.rule.ActionRuleSimple;
+import org.monospark.actioncontrol.rule.ActionRule;
 import org.monospark.actioncontrol.rule.filter.ActionFilterOption;
 import org.monospark.actioncontrol.rule.filter.ActionFilterTemplate;
 import org.spongepowered.api.block.BlockSnapshot;
@@ -12,7 +12,7 @@ import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
-public final class BlockInteractRule<E extends InteractBlockEvent> extends ActionRuleSimple<E> {
+public final class BlockInteractRule<E extends InteractBlockEvent> extends ActionRule<E> {
 
     public BlockInteractRule(String name, Class<E> eventClass) {
         super(name, eventClass);

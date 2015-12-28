@@ -39,14 +39,14 @@ public final class ActionControl {
     public void onServerInit(GameInitializationEvent event) {
         Sponge.getCommandDispatcher().register(this, createReloadCommandSpec(), "actioncontrol");
 
-        for (ActionRule<?, ?> rule : ActionRule.ALL) {
+        for (ActionRule<?> rule : ActionRule.ALL) {
             registerActionRule(rule);
         }
 
         loadConfig();
     }
 
-    private <E extends Event & Cancellable> void registerActionRule(ActionRule<E, ?> rule) {
+    private <E extends Event & Cancellable> void registerActionRule(ActionRule<E> rule) {
         Sponge.getGame().getEventManager().registerListener(this, rule.getEventClass(), rule);
     }
 

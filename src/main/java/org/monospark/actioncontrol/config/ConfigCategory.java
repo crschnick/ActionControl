@@ -18,13 +18,13 @@ import com.google.gson.JsonParseException;
 
 final class ConfigCategory {
 
-    private Map<ActionRule<?, ?>, ActionSettings> settings;
+    private Map<ActionRule<?>, ActionSettings<?>> settings;
 
-    private ConfigCategory(Map<ActionRule<?, ?>, ActionSettings> settings) {
+    private ConfigCategory(Map<ActionRule<?>, ActionSettings<?>> settings) {
         this.settings = settings;
     }
 
-    Map<ActionRule<?, ?>, ActionSettings> getSettings() {
+    Map<ActionRule<?>, ActionSettings<?>> getSettings() {
         return settings;
     }
 
@@ -34,14 +34,14 @@ final class ConfigCategory {
         public ConfigCategory deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
             JsonObject object = json.getAsJsonObject();
-            Map<ActionRule<?, ?>, ActionSettings> allSettings = new HashMap<ActionRule<?, ?>, ActionSettings>();
+            Map<ActionRule<?>, ActionSettings<?>> allSettings = new HashMap<ActionRule<?>, ActionSettings<?>>();
             for (Entry<String, JsonElement> entry : object.entrySet()) {
-                Optional<ActionRule<?, ?>> rule = ActionRule.byName(entry.getKey());
+                Optional<ActionRule<?>> rule = ActionRule.byName(entry.getKey());
                 if (rule == null) {
                     throw new JsonParseException("Unknown action rule: " + entry.getKey());
                 }
 
-                ActionSettings settings = rule.get().deserializeSettings(entry.getValue());
+                ActionSettings<?> settings = rule.get().deserializeSettings(entry.getValue());
                 allSettings.put(rule.get(), settings);
             }
             return new ConfigCategory(allSettings);

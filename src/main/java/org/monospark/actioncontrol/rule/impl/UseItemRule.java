@@ -1,13 +1,13 @@
 package org.monospark.actioncontrol.rule.impl;
 
 import org.monospark.actioncontrol.matcher.MatcherType;
-import org.monospark.actioncontrol.rule.ActionRuleSimple;
+import org.monospark.actioncontrol.rule.ActionRule;
 import org.monospark.actioncontrol.rule.filter.ActionFilterOption;
 import org.monospark.actioncontrol.rule.filter.ActionFilterTemplate;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
-public final class UseItemRule extends ActionRuleSimple<UseItemStackEvent.Start> {
+public final class UseItemRule extends ActionRule<UseItemStackEvent.Start> {
 
     public UseItemRule() {
         super("useItem", UseItemStackEvent.Start.class);
