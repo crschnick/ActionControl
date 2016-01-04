@@ -1,11 +1,9 @@
 package org.monospark.actioncontrol.rule.response;
 
-import com.google.gson.annotations.SerializedName;
+import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.event.Event;
 
-public enum ActionResponse {
+public interface ActionResponse {
 
-    @SerializedName("allow") ALLOW,
-
-    @SerializedName
-    ("deny") DENY;
+    <E extends Event & Cancellable> void execute(E event);
 }

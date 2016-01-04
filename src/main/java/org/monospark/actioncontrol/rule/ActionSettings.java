@@ -1,5 +1,6 @@
 package org.monospark.actioncontrol.rule;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,27 +14,31 @@ import org.monospark.actioncontrol.rule.filter.ActionFilter;
 import org.monospark.actioncontrol.rule.filter.ActionFilterOption;
 import org.monospark.actioncontrol.rule.filter.ActionFilterTemplate;
 import org.monospark.actioncontrol.rule.response.ActionResponse;
+import org.monospark.actioncontrol.rule.response.ActionResponseType;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-public final class ActionSettings<E extends Event> {
-
-    private ActionResponse response;
+public final class ActionSettings<E extends Event & Cancellable> {
 
     private Set<ActionFilter<E>> filters;
 
-    public ActionSettings(ActionResponse response, Set<ActionFilter<E>> filters) {
-        this.response = response;
+    private Set<ActionResponse> matchResponses;
+
+    private Set<ActionResponse> noMatchResponses;
+
+    private ActionSettings(Set<ActionFilter<E>> filters, Set<ActionResponse> matchResponses,
+            Set<ActionResponse> noMatchResponses) {
         this.filters = filters;
+        this.matchResponses = matchResponses;
+        this.noMatchResponses = noMatchResponses;
     }
 
-    public boolean isAllowed(E event) {
+    public void handleEvent(E event) {
         boolean matchOccured = false;
 
         for (ActionFilter<E> filter : filters) {
@@ -44,7 +49,9 @@ public final class ActionSettings<E extends Event> {
             }
         }
 
-        return matchOccured ? response == ActionResponse.ALLOW : response == ActionResponse.DENY;
+        for (ActionResponse response : (matchOccured ? matchResponses : noMatchResponses)) {
+            response.execute(event);
+        }
     }
 
     static final class Deserializer<E extends Event & Cancellable> {
@@ -57,19 +64,49 @@ public final class ActionSettings<E extends Event> {
 
         public ActionSettings<E> deserialize(JsonElement json) throws JsonParseException {
             JsonObject settingsObject = json.getAsJsonObject();
-            JsonElement responseElement = settingsObject.get("response");
-            if (responseElement == null) {
-                throw new JsonParseException("Missing \"response\" property");
-            }
-
-            ActionResponse response = new Gson().fromJson(responseElement, ActionResponse.class);
             JsonElement filterElement = settingsObject.get("filter");
             if (filterElement == null) {
                 throw new JsonParseException("Missing \"filter\" property");
             }
 
+            JsonElement responseElement = settingsObject.get("response");
+            if (responseElement == null) {
+                throw new JsonParseException("Missing \"response\" property");
+            }
+
+            JsonElement matchElement = responseElement.getAsJsonObject().get("match");
+            Set<ActionResponse> matchResponses = matchElement != null ? deserializeActionResponses(matchElement)
+                    : Collections.emptySet();
+
+            JsonElement noMatchElement = responseElement.getAsJsonObject().get("noMatch");
+            Set<ActionResponse> noMatchResponses = noMatchElement != null ? deserializeActionResponses(noMatchElement)
+                    : Collections.emptySet();
+
             Set<ActionFilter<E>> filters = deserializeFilters(filterElement, handler.getFilterTemplate());
-            return new ActionSettings<E>(response, filters);
+            return new ActionSettings<E>(filters, matchResponses, noMatchResponses);
+        }
+
+        private Set<ActionResponse> deserializeActionResponses(JsonElement json) {
+            if (json.isJsonArray()) {
+                Set<ActionResponse> responses = new HashSet<ActionResponse>();
+                for (JsonElement element : json.getAsJsonArray()) {
+                    responses.add(deserializeActionResponse(element));
+                }
+                return responses;
+            } else {
+                return Collections.singleton(deserializeActionResponse(json));
+            }
+        }
+
+        private ActionResponse deserializeActionResponse(JsonElement json) {
+            for (ActionResponseType type : ActionResponseType.ALL_TYPES) {
+                Optional<ActionResponse> response = type.parse(json.getAsString());
+                if (response.isPresent()) {
+                    return response.get();
+                }
+            }
+
+            throw new JsonParseException("Invalid action response: " + json.getAsString());
         }
 
         private Set<ActionFilter<E>> deserializeFilters(JsonElement json, ActionFilterTemplate template) {

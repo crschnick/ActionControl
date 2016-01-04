@@ -85,11 +85,7 @@ public abstract class ActionRule<E extends Event & Cancellable>
                 continue;
             }
 
-            boolean allowed = settings.get().isAllowed(event);
-            if (!allowed) {
-                event.setCancelled(true);
-                return;
-            }
+            settings.get().handleEvent(event);
         }
     }
 
