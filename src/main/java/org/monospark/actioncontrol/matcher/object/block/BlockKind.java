@@ -23,7 +23,7 @@ public final class BlockKind extends ObjectKind implements Matcher<BlockSnapshot
 
     @Override
     public boolean matches(BlockSnapshot block) {
-        int meta = block.getState().toContainer().getInt(new DataQuery("UnsafeMeta")).get();
+        int meta = block.getState().toContainer().getInt(DataQuery.of("UnsafeMeta")).get();
         return type.equals(block.getState().getType()) && (meta & getVariant()) == getVariant();
     }
 

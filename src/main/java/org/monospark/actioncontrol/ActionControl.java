@@ -20,7 +20,7 @@ import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import com.google.inject.Inject;
@@ -37,7 +37,7 @@ public final class ActionControl {
 
     @Listener
     public void onServerInit(GameInitializationEvent event) {
-        Sponge.getCommandDispatcher().register(this, createReloadCommandSpec(), "actioncontrol");
+        Sponge.getCommandManager().register(this, createReloadCommandSpec(), "actioncontrol");
 
         for (ActionRule<?> rule : ActionRule.ALL) {
             registerActionRule(rule);
@@ -52,7 +52,7 @@ public final class ActionControl {
 
     private CommandSpec createReloadCommandSpec() {
         CommandSpec reloadCommand = CommandSpec.builder()
-                .description(Texts.of("Reload the ActionControl config"))
+                .description(Text.of("Reload the ActionControl config"))
                 .permission("actioncontrol.reload")
                 .executor(new CommandExecutor() {
 
@@ -62,11 +62,11 @@ public final class ActionControl {
                 if (src instanceof Player) {
                     Player player = (Player) src;
                     if (successful) {
-                        player.sendMessage(Texts.builder("Successfully reloaded the config file")
+                        player.sendMessage(Text.builder("Successfully reloaded the config file")
                                 .color(TextColors.GREEN)
                                 .build());
                     } else {
-                        player.sendMessage(Texts.builder("An error occured while loading the config. "
+                        player.sendMessage(Text.builder("An error occured while loading the config. "
                                 + "Check the console for details.")
                                 .color(TextColors.RED)
                                 .build());

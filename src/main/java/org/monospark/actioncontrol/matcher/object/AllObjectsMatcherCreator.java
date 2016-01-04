@@ -38,7 +38,7 @@ public final class AllObjectsMatcherCreator extends MatcherCreator<ItemStackSnap
                         return false;
                     }
 
-                    int damage = stack.toContainer().getInt(new DataQuery("UnsafeDamage")).get();
+                    int damage = stack.toContainer().getInt(DataQuery.of("UnsafeDamage")).get();
                     return type.get() == kind.getBlockType() && (damage & kind.getVariant()) == kind.getVariant();
                 }
             });
