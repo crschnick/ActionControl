@@ -1,9 +1,9 @@
 package org.monospark.actioncontrol;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
-import org.monospark.actioncontrol.category.Category;
-import org.monospark.actioncontrol.config.ConfigParseException;
+import org.monospark.actioncontrol.config.ConfigRegistry;
 import org.monospark.actioncontrol.rule.ActionRule;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -81,10 +81,10 @@ public final class ActionControl {
 
     private boolean loadConfig() {
         try {
-            Category.getRegistry().loadCategories(privateConfigDir);
+            ConfigRegistry.getRegistry().loadConfigs(privateConfigDir);
             logger.info("Successfully loaded the config file");
             return true;
-        } catch (ConfigParseException e) {
+        } catch (IOException e) {
             logger.error("An error occured while loading the config file.", e);
             logger.info("Fix the config and reload the plugin or restart the server to make it work again.");
             return false;

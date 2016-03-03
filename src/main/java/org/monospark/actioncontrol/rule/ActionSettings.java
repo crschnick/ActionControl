@@ -7,14 +7,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.monospark.actioncontrol.matcher.Matcher;
-import org.monospark.actioncontrol.matcher.MatcherAmount;
-import org.monospark.actioncontrol.matcher.MatcherType;
 import org.monospark.actioncontrol.rule.filter.ActionFilter;
 import org.monospark.actioncontrol.rule.filter.ActionFilterOption;
 import org.monospark.actioncontrol.rule.filter.ActionFilterTemplate;
 import org.monospark.actioncontrol.rule.response.ActionResponse;
 import org.monospark.actioncontrol.rule.response.ActionResponseType;
+import org.monospark.spongematchers.matcher.SpongeMatcher;
+import org.monospark.spongematchers.parser.SpongeMatcherParseException;
+import org.monospark.spongematchers.parser.element.StringElement;
+import org.monospark.spongematchers.parser.element.StringElementParser;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 
@@ -62,7 +63,7 @@ public final class ActionSettings<E extends Event & Cancellable> {
             this.handler = handler;
         }
 
-        public ActionSettings<E> deserialize(JsonElement json) throws JsonParseException {
+        public ActionSettings<E> deserialize(JsonElement json) throws JsonParseException, SpongeMatcherParseException {
             JsonObject settingsObject = json.getAsJsonObject();
             JsonElement filterElement = settingsObject.get("filter");
             if (filterElement == null) {
@@ -109,53 +110,39 @@ public final class ActionSettings<E extends Event & Cancellable> {
             throw new JsonParseException("Invalid action response: " + json.getAsString());
         }
 
-        private Set<ActionFilter<E>> deserializeFilters(JsonElement json, ActionFilterTemplate template) {
+        private Set<ActionFilter<E>> deserializeFilters(JsonElement json, ActionFilterTemplate template)
+                throws SpongeMatcherParseException {
             Set<ActionFilter<E>> filters = new HashSet<ActionFilter<E>>();
             if (json.isJsonArray()) {
                 JsonArray array = json.getAsJsonArray();
-                array.forEach(e -> filters.add(deserializeFilter(e, template)));
+                for (JsonElement arrayElement : array) {
+                    filters.add(deserializeFilter(arrayElement, template));
+                }
             } else {
                 filters.add(deserializeFilter(json, template));
             }
             return filters;
         }
 
-        private ActionFilter<E> deserializeFilter(JsonElement json, ActionFilterTemplate template) {
-            Map<ActionFilterOption<?, E>, Matcher<?>> optionMatchers =
-                    new HashMap<ActionFilterOption<?, E>, Matcher<?>>();
+        private ActionFilter<E> deserializeFilter(JsonElement json, ActionFilterTemplate template)
+                throws SpongeMatcherParseException {
+            Map<ActionFilterOption<?, E>, SpongeMatcher<?>> optionMatchers =
+                    new HashMap<ActionFilterOption<?, E>, SpongeMatcher<?>>();
             JsonObject object = json.getAsJsonObject();
             for (ActionFilterOption<?, ?> option : template.getOptions()) {
                 @SuppressWarnings("unchecked")
                 ActionFilterOption<?, E> castOption = (ActionFilterOption<?, E>) option;
                 JsonElement optionElement = object.get(option.getName());
-                Matcher<?> matcher = deserializeMatcher(optionElement, option.getType());
+                if (optionElement == null) {
+                    continue;
+                }
+
+                String matcherString = optionElement.getAsString();
+                StringElement matcherElement = StringElementParser.parseStringElement(matcherString);
+                SpongeMatcher<?> matcher = option.getType().parseMatcher(matcherElement);
                 optionMatchers.put(castOption, matcher);
             }
             return new ActionFilter<E>(optionMatchers);
-        }
-
-        private <T> Matcher<T> deserializeMatcher(JsonElement json, MatcherType<T> type) {
-            if (json.isJsonArray()) {
-                JsonArray array = json.getAsJsonArray();
-                Set<Matcher<T>> matchers = new HashSet<Matcher<T>>();
-                for (int i = 0; i < array.size(); i++) {
-                    String name = array.get(i).getAsString();
-                    matchers.add(getMatcherByName(name, type));
-                }
-                return new MatcherAmount<T>(matchers);
-            } else {
-                String name = json.getAsString();
-                return getMatcherByName(name, type);
-            }
-        }
-
-        private <T> Matcher<T> getMatcherByName(String name, MatcherType<T> type) {
-            Optional<? extends Matcher<T>> matcher = type.getMatcher(name);
-            if (!matcher.isPresent()) {
-                throw new JsonParseException("Invalid " + type.getName() + " id: " + name);
-            }
-
-            return matcher.get();
         }
     }
 }

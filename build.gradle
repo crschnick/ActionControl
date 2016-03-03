@@ -23,6 +23,9 @@ repositories {
 	maven {
 		url "http://repo.spongepowered.org/maven/"
 	}
+    maven {
+        url "https://repo.monospark.org/content/groups/public/"
+    }
 }
 
 configurations {
@@ -31,6 +34,7 @@ configurations {
 
 dependencies {
 	compile 'org.spongepowered:spongeapi:3.0.0'
+    runtime 'org.monospark:spongematchers:1.0'
     testCompile 'junit:junit:4.11'
     customCheckstyle 'com.puppycrawl.tools:checkstyle:6.13'
 }

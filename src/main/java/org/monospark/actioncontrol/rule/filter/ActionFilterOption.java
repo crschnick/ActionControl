@@ -2,7 +2,7 @@ package org.monospark.actioncontrol.rule.filter;
 
 import java.util.function.Function;
 
-import org.monospark.actioncontrol.matcher.MatcherType;
+import org.monospark.spongematchers.type.MatcherType;
 import org.spongepowered.api.event.Event;
 
 public final class ActionFilterOption<T, E extends Event> {

@@ -1,11 +1,11 @@
 package org.monospark.actioncontrol.rule.impl;
 
-import org.monospark.actioncontrol.matcher.MatcherType;
 import org.monospark.actioncontrol.rule.ActionRule;
 import org.monospark.actioncontrol.rule.filter.ActionFilterOption;
 import org.monospark.actioncontrol.rule.filter.ActionFilterTemplate;
+import org.monospark.spongematchers.type.MatcherType;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
-import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.item.inventory.ItemStack;
 
 public final class UseItemRule extends ActionRule<UseItemStackEvent.Start> {
 
@@ -16,8 +16,8 @@ public final class UseItemRule extends ActionRule<UseItemStackEvent.Start> {
     @Override
     protected ActionFilterTemplate createFilter() {
         return ActionFilterTemplate.builder()
-                .addOption(new ActionFilterOption<ItemStackSnapshot, UseItemStackEvent.Start>("itemIds",
-                        MatcherType.ITEM, e -> e.getItemStackInUse().getOriginal()))
+                .addOption(new ActionFilterOption<ItemStack, UseItemStackEvent.Start>("itemIds",
+                        MatcherType.ITEM_STACK, e -> e.getItemStackInUse().getOriginal().createStack()))
                 .build();
     }
 }

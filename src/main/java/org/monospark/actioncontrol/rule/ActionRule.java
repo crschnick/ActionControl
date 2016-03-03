@@ -4,13 +4,15 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.monospark.actioncontrol.category.Category;
+import org.monospark.actioncontrol.config.Config;
+import org.monospark.actioncontrol.config.ConfigRegistry;
 import org.monospark.actioncontrol.rule.filter.ActionFilterTemplate;
 import org.monospark.actioncontrol.rule.impl.BlockBreakRule;
 import org.monospark.actioncontrol.rule.impl.BlockInteractRule;
 import org.monospark.actioncontrol.rule.impl.BlockPlaceRule;
 import org.monospark.actioncontrol.rule.impl.EntityInteractRule;
 import org.monospark.actioncontrol.rule.impl.UseItemRule;
+import org.monospark.spongematchers.parser.SpongeMatcherParseException;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
@@ -74,22 +76,23 @@ public abstract class ActionRule<E extends Event & Cancellable>
             return;
         }
 
-        Set<Category> categories = Category.getRegistry().getCategories(player.get());
-        if (categories.size() == 0) {
+        Set<Config> configs = ConfigRegistry.getRegistry().getConfigs(player.get());
+        if (configs.size() == 0) {
             return;
         }
 
-        for (Category c : categories) {
-            Optional<ActionSettings<E>> settings = c.getActionSettings(this);
-            if (!settings.isPresent()) {
+        for (Config c : configs) {
+            @SuppressWarnings("unchecked")
+            ActionSettings<E> settings = (ActionSettings<E>) c.getSettings().get(this);
+            if (settings == null) {
                 continue;
             }
 
-            settings.get().handleEvent(event);
+            settings.handleEvent(event);
         }
     }
 
-    public final ActionSettings<E> deserializeSettings(JsonElement json) {
+    public final ActionSettings<E> deserializeSettings(JsonElement json) throws SpongeMatcherParseException {
         return settingsDeserializer.deserialize(json);
     }
 
