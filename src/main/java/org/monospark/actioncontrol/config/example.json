@@ -1,6 +1,6 @@
 {
     "playerFilter": "{'permissions': {'actioncontrol.category.name': true}}",
-    "rules": {
+    "actionRules": {
         "breakBlock": {
             "filter": {
                 "toolIds": "{'type': 'minecraft:diamond_axe'}",

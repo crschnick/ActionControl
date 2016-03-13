@@ -58,9 +58,9 @@ public final class Config {
                 throw new JsonParseException(e);
             }
 
-            JsonElement rulesElement = json.getAsJsonObject().get("rules");
+            JsonElement rulesElement = json.getAsJsonObject().get("actionRules");
             if (rulesElement == null) {
-                throw new JsonParseException("Missing \"rules\" property");
+                throw new JsonParseException("Missing \"actionRules\" property");
             }
 
             Map<ActionRule<?>, ActionSettings<?>> ruleSettings = deserializeRuleSettings(rulesElement);
