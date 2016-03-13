@@ -20,9 +20,9 @@ public final class EntityInteractRule<E extends InteractEntityEvent> extends Act
     @Override
     protected ActionFilterTemplate createFilter() {
         return ActionFilterTemplate.builder()
-                .addOption(new ActionFilterOption<Entity, InteractEntityEvent>("entityIds",
+                .addOption(new ActionFilterOption<Entity, InteractEntityEvent>("entity",
                         MatcherType.ANY_ENTITY, e -> e.getTargetEntity()))
-                .addOption(new ActionFilterOption<Optional<ItemStack>, InteractEntityEvent>("itemIds",
+                .addOption(new ActionFilterOption<Optional<ItemStack>, InteractEntityEvent>("item",
                         MatcherType.optional(MatcherType.ITEM_STACK), (e) -> {
                             Optional<ItemStack> inHand = e.getCause().first(Player.class).get().getItemInHand();
                             return inHand;

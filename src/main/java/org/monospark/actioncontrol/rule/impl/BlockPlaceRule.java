@@ -16,7 +16,7 @@ public final class BlockPlaceRule extends ActionRule<ChangeBlockEvent.Place> {
     @Override
     protected ActionFilterTemplate createFilter() {
         return ActionFilterTemplate.builder()
-                .addOption(new ActionFilterOption<BlockSnapshot, ChangeBlockEvent.Place>("blockIds",
+                .addOption(new ActionFilterOption<BlockSnapshot, ChangeBlockEvent.Place>("block",
                         MatcherType.BLOCK, e -> e.getTransactions().get(0).getFinal()))
                 .build();
     }

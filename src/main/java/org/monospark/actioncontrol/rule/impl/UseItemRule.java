@@ -16,7 +16,7 @@ public final class UseItemRule extends ActionRule<UseItemStackEvent.Start> {
     @Override
     protected ActionFilterTemplate createFilter() {
         return ActionFilterTemplate.builder()
-                .addOption(new ActionFilterOption<ItemStack, UseItemStackEvent.Start>("itemIds",
+                .addOption(new ActionFilterOption<ItemStack, UseItemStackEvent.Start>("item",
                         MatcherType.ITEM_STACK, e -> e.getItemStackInUse().getOriginal().createStack()))
                 .build();
     }

@@ -3,8 +3,8 @@
     "actionRules": {
         "breakBlock": {
             "filter": {
-                "toolIds": "{'type': 'minecraft:diamond_axe'}",
-                "blockIds": "{'state': {'type': {'id': 'minecraft:log'}, 'traits': {'variant': 'birch'}}}"
+                "block": "{'state': {'type': {'id': 'minecraft:log'}, 'traits': {'variant': 'birch'}}}",
+                "tool": "{'type': 'minecraft:diamond_axe'}"
             },
             "response": {
                 "match": "deny"

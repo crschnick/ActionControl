@@ -20,11 +20,11 @@ public final class BlockBreakRule extends ActionRule<ChangeBlockEvent.Break> {
     @Override
     protected ActionFilterTemplate createFilter() {
         return ActionFilterTemplate.builder()
-                .addOption(new ActionFilterOption<BlockSnapshot, ChangeBlockEvent.Break>("blockIds",
+                .addOption(new ActionFilterOption<BlockSnapshot, ChangeBlockEvent.Break>("block",
                         MatcherType.BLOCK, e -> {
                             return e.getTransactions().get(0).getOriginal();
                         }))
-                .addOption(new ActionFilterOption<Optional<ItemStack>, ChangeBlockEvent.Break>("toolIds",
+                .addOption(new ActionFilterOption<Optional<ItemStack>, ChangeBlockEvent.Break>("tool",
                         MatcherType.optional(MatcherType.ITEM_STACK), (e) -> {
                                 Optional<ItemStack> inHand = e.getCause().first(Player.class).get().getItemInHand();
                                 return inHand;

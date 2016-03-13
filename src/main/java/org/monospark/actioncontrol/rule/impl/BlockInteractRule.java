@@ -20,9 +20,9 @@ public final class BlockInteractRule<E extends InteractBlockEvent> extends Actio
     @Override
     protected ActionFilterTemplate createFilter() {
         return ActionFilterTemplate.builder()
-                .addOption(new ActionFilterOption<BlockSnapshot, InteractBlockEvent>("blockIds",
+                .addOption(new ActionFilterOption<BlockSnapshot, InteractBlockEvent>("block",
                         MatcherType.BLOCK, e -> e.getTargetBlock()))
-                .addOption(new ActionFilterOption<Optional<ItemStack>, InteractBlockEvent>("itemIds",
+                .addOption(new ActionFilterOption<Optional<ItemStack>, InteractBlockEvent>("item",
                         MatcherType.optional(MatcherType.ITEM_STACK), (e) -> {
                                 Optional<ItemStack> inHand = e.getCause().first(Player.class).get().getItemInHand();
                                 return inHand;
