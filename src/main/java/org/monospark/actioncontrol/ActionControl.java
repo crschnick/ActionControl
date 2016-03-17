@@ -25,7 +25,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import com.google.inject.Inject;
 
-@Plugin(id = "actioncontrol", name = "ActionControl", version = "1.0")
+@Plugin(id = "org.monospark.actioncontrol", name = "ActionControl", version = "1.0", description = "Description")
 public final class ActionControl {
 
     @Inject
