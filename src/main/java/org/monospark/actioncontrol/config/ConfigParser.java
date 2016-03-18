@@ -24,6 +24,7 @@ public final class ConfigParser {
     private ConfigParser() {}
 
     public static Set<Config> loadConfigs(Path path) throws IOException {
+        path.toFile().mkdir();
         Set<Config> configs = Sets.newHashSet();
         for (File file : path.toFile().listFiles()) {
             if (file.isDirectory()) {

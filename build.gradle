@@ -30,6 +30,9 @@ dependencies {
 shadowJar {
     classifier = ''
     
+    from 'src/main/java/org/monospark/actioncontrol/config/example.json'
+    rename 'example.json', 'org/monospark/actioncontrol/config/example.json'
+    
     from 'LICENSE.txt'
     rename 'LICENSE.txt', 'actioncontrol-license.txt'
     

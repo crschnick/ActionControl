@@ -1,5 +1,5 @@
 {
-    "playerFilter": "{'permissions': {'actioncontrol.category.name': true}}",
+    "playerFilter": "{'permissions': {'some.permission': true}}",
     "actionRules": {
         "breakBlock": {
             "filter": {
