@@ -43,7 +43,7 @@ public final class ActionControl {
             registerActionRule(rule);
         }
 
-        loadConfig();
+        loadConfigs();
     }
 
     private <E extends Event & Cancellable> void registerActionRule(ActionRule<E> rule) {
@@ -52,21 +52,21 @@ public final class ActionControl {
 
     private CommandSpec createReloadCommandSpec() {
         CommandSpec reloadCommand = CommandSpec.builder()
-                .description(Text.of("Reload the ActionControl config"))
+                .description(Text.of("Reload all ActionControl config files"))
                 .permission("actioncontrol.reload")
                 .executor(new CommandExecutor() {
 
             @Override
             public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-                boolean successful = loadConfig();
+                boolean successful = loadConfigs();
                 if (src instanceof Player) {
                     Player player = (Player) src;
                     if (successful) {
-                        player.sendMessage(Text.builder("Successfully reloaded the config file")
+                        player.sendMessage(Text.builder("Successfully reloaded the config files")
                                 .color(TextColors.GREEN)
                                 .build());
                     } else {
-                        player.sendMessage(Text.builder("An error occured while loading the config. "
+                        player.sendMessage(Text.builder("An error occured while loading a config file. "
                                 + "Check the console for details.")
                                 .color(TextColors.RED)
                                 .build());
@@ -79,13 +79,13 @@ public final class ActionControl {
         return CommandSpec.builder().child(reloadCommand, "reload").build();
     }
 
-    private boolean loadConfig() {
+    private boolean loadConfigs() {
         try {
             ConfigRegistry.getRegistry().loadConfigs(privateConfigDir);
-            logger.info("Successfully loaded the config file");
+            logger.info("Successfully loaded the config files");
             return true;
         } catch (IOException e) {
-            logger.error("An error occured while loading the config file.", e);
+            logger.error("An error occured while loading a config file.", e);
             logger.info("Fix the config and reload the plugin or restart the server to make it work again.");
             return false;
         }
