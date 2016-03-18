@@ -3,6 +3,7 @@ package org.monospark.actioncontrol.rule;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -90,7 +91,7 @@ public final class ActionSettings<E extends Event & Cancellable> {
 
         private Set<ActionResponse> deserializeActionResponses(JsonElement json) {
             if (json.isJsonArray()) {
-                Set<ActionResponse> responses = new HashSet<ActionResponse>();
+                Set<ActionResponse> responses = new LinkedHashSet<ActionResponse>();
                 for (JsonElement element : json.getAsJsonArray()) {
                     responses.add(deserializeActionResponse(element));
                 }
