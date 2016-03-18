@@ -45,6 +45,28 @@ public abstract class ActionResponseType {
                 return Optional.of(new ActionResponse() {
                     @Override
                     public <E extends Event & Cancellable> void execute(E event) {
+                        Sponge.getGame().getCommandManager().process(Sponge.getServer().getConsole(),
+                                command.replace("<player>", event.getCause().first(Player.class).get().getName()));
+                    }
+                });
+            }
+        });
+
+        allTypes.add(new ActionResponseType() {
+
+            private Pattern pattern = Pattern.compile("playerCommand\\((?<command>.+)\\)");
+
+            @Override
+            public Optional<ActionResponse> parse(String string) {
+                Matcher matcher = pattern.matcher(string);
+                if (!matcher.matches()) {
+                    return Optional.empty();
+                }
+
+                String command = matcher.group("command");
+                return Optional.of(new ActionResponse() {
+                    @Override
+                    public <E extends Event & Cancellable> void execute(E event) {
                         Sponge.getGame().getCommandManager().process(event.getCause().first(Player.class).get(),
                                 command);
                     }
