@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
@@ -129,6 +130,19 @@ public final class ActionSettings<E extends Event & Cancellable> {
             Map<ActionFilterOption<?, E>, SpongeMatcher<?>> optionMatchers =
                     new HashMap<ActionFilterOption<?, E>, SpongeMatcher<?>>();
             JsonObject object = json.getAsJsonObject();
+            if (object.entrySet().size() == 0) {
+                throw new JsonParseException("Filters must be not empty");
+            }
+
+            for (Entry<String, JsonElement> entry : object.entrySet()) {
+                boolean validOption = template.getOptions().stream()
+                        .map(o -> o.getName())
+                        .anyMatch(s -> entry.getKey().equals(s));
+                if (!validOption) {
+                    throw new JsonParseException("Invalid filter option: " + entry.getKey());
+                }
+            }
+
             for (ActionFilterOption<?, ?> option : template.getOptions()) {
                 @SuppressWarnings("unchecked")
                 ActionFilterOption<?, E> castOption = (ActionFilterOption<?, E>) option;
