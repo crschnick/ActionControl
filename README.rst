@@ -1,3 +1,7 @@
+.. image:: https://ci.monospark.org/buildStatus/icon?job=ActionControl
+   :target: https://ci.monospark.org/job/ActionControl
+   :alt: Build Status
+
 =============
 ActionControl
 =============
