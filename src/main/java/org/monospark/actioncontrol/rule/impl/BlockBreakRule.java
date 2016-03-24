@@ -9,12 +9,18 @@ import org.monospark.spongematchers.type.MatcherType;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
+import org.spongepowered.api.event.block.ChangeBlockEvent.Break;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 public final class BlockBreakRule extends ActionRule<ChangeBlockEvent.Break> {
 
     public BlockBreakRule() {
         super("breakBlock", ChangeBlockEvent.Break.class);
+    }
+
+    @Override
+    protected boolean acceptsEvent(Break event) {
+        return true;
     }
 
     @Override

@@ -18,6 +18,11 @@ public final class BlockInteractRule<E extends InteractBlockEvent> extends Actio
     }
 
     @Override
+    protected boolean acceptsEvent(E event) {
+        return true;
+    }
+
+    @Override
     protected ActionFilterTemplate createFilter() {
         return ActionFilterTemplate.builder()
                 .addOption(new ActionFilterOption<BlockSnapshot, InteractBlockEvent>("block",

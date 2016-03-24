@@ -18,6 +18,11 @@ public final class EntityInteractRule<E extends InteractEntityEvent> extends Act
     }
 
     @Override
+    protected boolean acceptsEvent(E event) {
+        return true;
+    }
+
+    @Override
     protected ActionFilterTemplate createFilter() {
         return ActionFilterTemplate.builder()
                 .addOption(new ActionFilterOption<Entity, InteractEntityEvent>("entity",

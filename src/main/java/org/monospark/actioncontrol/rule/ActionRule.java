@@ -10,8 +10,9 @@ import org.monospark.actioncontrol.rule.filter.ActionFilterTemplate;
 import org.monospark.actioncontrol.rule.impl.BlockBreakRule;
 import org.monospark.actioncontrol.rule.impl.BlockInteractRule;
 import org.monospark.actioncontrol.rule.impl.BlockPlaceRule;
+import org.monospark.actioncontrol.rule.impl.CraftRule;
 import org.monospark.actioncontrol.rule.impl.EntityInteractRule;
-import org.monospark.actioncontrol.rule.impl.UseItemRule;
+import org.monospark.actioncontrol.rule.impl.ItemUseRule;
 import org.monospark.spongematchers.parser.SpongeMatcherParseException;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
@@ -48,7 +49,8 @@ public abstract class ActionRule<E extends Event & Cancellable>
                 InteractEntityEvent.Primary.class));
         handlers.add(new EntityInteractRule<InteractEntityEvent.Secondary>("rightClickEntity",
                 InteractEntityEvent.Secondary.class));
-        handlers.add(new UseItemRule());
+        handlers.add(new ItemUseRule());
+        handlers.add(new CraftRule());
         return handlers;
     }
 
@@ -67,10 +69,16 @@ public abstract class ActionRule<E extends Event & Cancellable>
         settingsDeserializer = new ActionSettings.Deserializer<>(this);
     }
 
+    protected abstract boolean acceptsEvent(E event);
+
     protected abstract ActionFilterTemplate createFilter();
 
     @Override
     public final void handle(E event) throws Exception {
+        if (!acceptsEvent(event)) {
+            return;
+        }
+
         Optional<Player> player = event.getCause().first(Player.class);
         if (!player.isPresent()) {
             return;

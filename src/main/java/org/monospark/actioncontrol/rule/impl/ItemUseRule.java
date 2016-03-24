@@ -7,10 +7,15 @@ import org.monospark.spongematchers.type.MatcherType;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
 
-public final class UseItemRule extends ActionRule<UseItemStackEvent.Start> {
+public final class ItemUseRule extends ActionRule<UseItemStackEvent.Start> {
 
-    public UseItemRule() {
+    public ItemUseRule() {
         super("useItem", UseItemStackEvent.Start.class);
+    }
+
+    @Override
+    protected boolean acceptsEvent(UseItemStackEvent.Start event) {
+        return true;
     }
 
     @Override

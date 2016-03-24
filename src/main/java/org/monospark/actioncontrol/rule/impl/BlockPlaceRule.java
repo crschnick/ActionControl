@@ -14,6 +14,11 @@ public final class BlockPlaceRule extends ActionRule<ChangeBlockEvent.Place> {
     }
 
     @Override
+    protected boolean acceptsEvent(ChangeBlockEvent.Place event) {
+        return true;
+    }
+
+    @Override
     protected ActionFilterTemplate createFilter() {
         return ActionFilterTemplate.builder()
                 .addOption(new ActionFilterOption<BlockSnapshot, ChangeBlockEvent.Place>("block",
