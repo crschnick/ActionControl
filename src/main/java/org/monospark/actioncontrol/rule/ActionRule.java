@@ -41,13 +41,13 @@ public abstract class ActionRule<E extends Event & Cancellable>
         Set<ActionRule<?>> handlers = new HashSet<ActionRule<?>>();
         handlers.add(new BlockPlaceRule());
         handlers.add(new BlockBreakRule());
-        handlers.add(new BlockInteractRule<InteractBlockEvent.Primary>("leftClickBlock",
+        handlers.add(new BlockInteractRule<InteractBlockEvent.Primary>("mineBlock",
                 InteractBlockEvent.Primary.class));
-        handlers.add(new BlockInteractRule<InteractBlockEvent.Secondary>("rightClickBlock",
+        handlers.add(new BlockInteractRule<InteractBlockEvent.Secondary>("interactWithBlock",
                 InteractBlockEvent.Secondary.class));
-        handlers.add(new EntityInteractRule<InteractEntityEvent.Primary>("leftClickEntity",
+        handlers.add(new EntityInteractRule<InteractEntityEvent.Primary>("attackEntity",
                 InteractEntityEvent.Primary.class));
-        handlers.add(new EntityInteractRule<InteractEntityEvent.Secondary>("rightClickEntity",
+        handlers.add(new EntityInteractRule<InteractEntityEvent.Secondary>("interactWithEntity",
                 InteractEntityEvent.Secondary.class));
         handlers.add(new ItemUseRule());
         handlers.add(new CraftRule());
