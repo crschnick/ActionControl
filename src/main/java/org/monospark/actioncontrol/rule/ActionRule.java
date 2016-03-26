@@ -42,9 +42,9 @@ public abstract class ActionRule<E extends Event & Cancellable>
         handlers.add(new BlockPlaceRule());
         handlers.add(new BlockBreakRule());
         handlers.add(new BlockInteractRule());
-        handlers.add(new EntityInteractRule<InteractEntityEvent.Primary>("attackEntity",
+        handlers.add(new EntityInteractRule<InteractEntityEvent.Primary>("attack-entity",
                 InteractEntityEvent.Primary.class));
-        handlers.add(new EntityInteractRule<InteractEntityEvent.Secondary>("interactWithEntity",
+        handlers.add(new EntityInteractRule<InteractEntityEvent.Secondary>("interact-with-entity",
                 InteractEntityEvent.Secondary.class));
         handlers.add(new ItemUseRule());
         handlers.add(new CraftRule());

@@ -10,7 +10,7 @@ import org.spongepowered.api.event.block.ChangeBlockEvent;
 public final class BlockPlaceRule extends ActionRule<ChangeBlockEvent.Place> {
 
     public BlockPlaceRule() {
-        super("placeBlock", ChangeBlockEvent.Place.class);
+        super("place-block", ChangeBlockEvent.Place.class);
     }
 
     @Override

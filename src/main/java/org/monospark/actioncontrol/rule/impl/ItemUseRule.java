@@ -10,7 +10,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 public final class ItemUseRule extends ActionRule<UseItemStackEvent.Start> {
 
     public ItemUseRule() {
-        super("useItem", UseItemStackEvent.Start.class);
+        super("use-item", UseItemStackEvent.Start.class);
     }
 
     @Override

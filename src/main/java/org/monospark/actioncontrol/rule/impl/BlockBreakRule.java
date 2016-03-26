@@ -15,7 +15,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 public final class BlockBreakRule extends ActionRule<ChangeBlockEvent.Break> {
 
     public BlockBreakRule() {
-        super("breakBlock", ChangeBlockEvent.Break.class);
+        super("break-block", ChangeBlockEvent.Break.class);
     }
 
     @Override

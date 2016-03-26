@@ -71,12 +71,12 @@ public final class ConfigParser {
     }
 
     private static Config deserializeConfig(ConfigurationNode value) throws ObjectMappingException, IOException {
-        ConfigurationNode playerFilterNode = value.getNode("playerFilter");
+        ConfigurationNode playerFilterNode = value.getNode("player-filter");
         if (playerFilterNode.getValue() == null) {
-            throw new IOException("Missing \"playerFilter\" node");
+            throw new IOException("Missing \"player-filter\" node");
         }
         if (playerFilterNode.getString() == null) {
-            throw new IOException("Invalid \"playerFilter\" node");
+            throw new IOException("Invalid \"player-filter\" node");
         }
 
         SpongeMatcher<Player> playerFilter = null;
@@ -87,9 +87,9 @@ public final class ConfigParser {
             throw new IOException("Invalid player filter", e);
         }
 
-        ConfigurationNode rulesNode = value.getNode("actionRules");
+        ConfigurationNode rulesNode = value.getNode("action-rules");
         if (rulesNode.getValue() == null) {
-            throw new IOException("Missing \"actionRules\" node");
+            throw new IOException("Missing \"action-rules\" node");
         }
 
         Map<ActionRule<?>, ActionSettings<?>> ruleSettings = deserializeActionRules(rulesNode);
@@ -99,7 +99,7 @@ public final class ConfigParser {
     private static Map<ActionRule<?>, ActionSettings<?>> deserializeActionRules(ConfigurationNode node)
             throws ObjectMappingException, IOException {
         if (node.getChildrenMap().size() == 0) {
-            throw new IOException("Invalid action rules node: " + node.getValue());
+            throw new IOException("Invalid \"action-rules\" node: " + node.getValue());
         }
 
         Map<ActionRule<?>, ActionSettings<?>> ruleSettings = new HashMap<ActionRule<?>, ActionSettings<?>>();

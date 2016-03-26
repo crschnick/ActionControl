@@ -1,6 +1,6 @@
-playerFilter: "{'permissions': {'some.permission': true}}",
-actionRules: {
-    breakBlock: {
+player-filter: "{'permissions': {'some.permission': true}}",
+action-rules: {
+    break-block: {
         filter: {
             block: "{'state': {'type': {'id': 'minecraft:log'}, 'traits': {'variant': 'birch'}}}",
             tool: "{'type': 'minecraft:diamond_axe'}"

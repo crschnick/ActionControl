@@ -14,7 +14,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 public final class BlockInteractRule extends ActionRule<InteractBlockEvent.Secondary> {
 
     public BlockInteractRule() {
-        super("interactWithBlock", InteractBlockEvent.Secondary.class);
+        super("interact-with-block", InteractBlockEvent.Secondary.class);
     }
 
     @Override
