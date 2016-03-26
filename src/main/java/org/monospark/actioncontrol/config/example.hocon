@@ -1,0 +1,12 @@
+playerFilter: "{'permissions': {'some.permission': true}}",
+actionRules: {
+    breakBlock: {
+        filter: {
+            block: "{'state': {'type': {'id': 'minecraft:log'}, 'traits': {'variant': 'birch'}}}",
+            tool: "{'type': 'minecraft:diamond_axe'}"
+        },
+        response: {
+            match: "deny"
+        }
+    }
+}

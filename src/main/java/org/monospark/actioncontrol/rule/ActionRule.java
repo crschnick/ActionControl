@@ -1,5 +1,6 @@
 package org.monospark.actioncontrol.rule;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -13,7 +14,6 @@ import org.monospark.actioncontrol.rule.impl.BlockPlaceRule;
 import org.monospark.actioncontrol.rule.impl.CraftRule;
 import org.monospark.actioncontrol.rule.impl.EntityInteractRule;
 import org.monospark.actioncontrol.rule.impl.ItemUseRule;
-import org.monospark.spongematchers.parser.SpongeMatcherParseException;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
@@ -21,7 +21,8 @@ import org.spongepowered.api.event.EventListener;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 
-import com.google.gson.JsonElement;
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 public abstract class ActionRule<E extends Event & Cancellable>
         implements EventListener<E> {
@@ -100,8 +101,9 @@ public abstract class ActionRule<E extends Event & Cancellable>
         }
     }
 
-    public final ActionSettings<E> deserializeSettings(JsonElement json) throws SpongeMatcherParseException {
-        return settingsDeserializer.deserialize(json);
+    public final ActionSettings<E> deserializeSettings(ConfigurationNode node) throws ObjectMappingException,
+            IOException {
+        return settingsDeserializer.deserialize(node);
     }
 
     public final String getName() {

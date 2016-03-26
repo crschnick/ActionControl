@@ -1,9 +1,11 @@
 package org.monospark.actioncontrol.rule;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -21,10 +23,10 @@ import org.monospark.spongematchers.parser.element.StringElementParser;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.google.common.reflect.TypeToken;
+
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 public final class ActionSettings<E extends Event & Cancellable> {
 
@@ -65,97 +67,116 @@ public final class ActionSettings<E extends Event & Cancellable> {
             this.handler = handler;
         }
 
-        public ActionSettings<E> deserialize(JsonElement json) throws JsonParseException, SpongeMatcherParseException {
-            JsonObject settingsObject = json.getAsJsonObject();
-            JsonElement filterElement = settingsObject.get("filter");
-            if (filterElement == null) {
-                throw new JsonParseException("Missing \"filter\" property");
+        public ActionSettings<E> deserialize(ConfigurationNode node) throws ObjectMappingException, IOException {
+            ConfigurationNode filterNode = node.getNode("filter");
+            if (filterNode.getValue() == null) {
+                throw new IOException("Missing \"filter\" property");
             }
 
-            JsonElement responseElement = settingsObject.get("response");
-            if (responseElement == null) {
-                throw new JsonParseException("Missing \"response\" property");
+            ConfigurationNode responseNode = node.getNode("response");
+            if (responseNode.getValue() == null) {
+                throw new IOException("Missing \"response\" property");
             }
 
-            JsonElement matchElement = responseElement.getAsJsonObject().get("match");
-            Set<ActionResponse> matchResponses = matchElement != null ? deserializeActionResponses(matchElement)
+            ConfigurationNode matchNode = responseNode.getNode("match");
+            Set<ActionResponse> matchResponses = matchNode.getValue() != null ? deserializeActionResponses(matchNode)
                     : Collections.emptySet();
 
-            JsonElement noMatchElement = responseElement.getAsJsonObject().get("noMatch");
-            Set<ActionResponse> noMatchResponses = noMatchElement != null ? deserializeActionResponses(noMatchElement)
-                    : Collections.emptySet();
+            ConfigurationNode noMatchNode = responseNode.getNode("noMatch");
+            Set<ActionResponse> noMatchResponses = noMatchNode.getValue() != null
+                    ? deserializeActionResponses(noMatchNode) : Collections.emptySet();
 
-            Set<ActionFilter<E>> filters = deserializeFilters(filterElement, handler.getFilterTemplate());
+            Set<ActionFilter<E>> filters = deserializeFilters(filterNode, handler.getFilterTemplate());
             return new ActionSettings<E>(filters, matchResponses, noMatchResponses);
         }
 
-        private Set<ActionResponse> deserializeActionResponses(JsonElement json) {
-            if (json.isJsonArray()) {
-                Set<ActionResponse> responses = new LinkedHashSet<ActionResponse>();
-                for (JsonElement element : json.getAsJsonArray()) {
-                    responses.add(deserializeActionResponse(element));
-                }
-                return responses;
-            } else {
-                return Collections.singleton(deserializeActionResponse(json));
+        private Set<ActionResponse> deserializeActionResponses(ConfigurationNode node) throws ObjectMappingException,
+                IOException {
+            List<String> list = node.getList(TypeToken.of(String.class));
+            if (list.size() == 0) {
+                throw new IOException("Invalid action response: " + node.getValue());
             }
+
+            Set<ActionResponse> responses = new LinkedHashSet<ActionResponse>();
+            for (String string : list) {
+                responses.add(parseActionResponse(string));
+            }
+            return responses;
         }
 
-        private ActionResponse deserializeActionResponse(JsonElement json) {
+        private ActionResponse parseActionResponse(String string) throws IOException {
             for (ActionResponseType type : ActionResponseType.ALL_TYPES) {
-                Optional<ActionResponse> response = type.parse(json.getAsString());
+                Optional<ActionResponse> response = type.parse(string);
                 if (response.isPresent()) {
                     return response.get();
                 }
             }
 
-            throw new JsonParseException("Invalid action response: " + json.getAsString());
+            throw new IOException("Invalid action response: " + string);
         }
 
-        private Set<ActionFilter<E>> deserializeFilters(JsonElement json, ActionFilterTemplate template)
-                throws SpongeMatcherParseException {
-            Set<ActionFilter<E>> filters = new HashSet<ActionFilter<E>>();
-            if (json.isJsonArray()) {
-                JsonArray array = json.getAsJsonArray();
-                for (JsonElement arrayElement : array) {
-                    filters.add(deserializeFilter(arrayElement, template));
-                }
-            } else {
-                filters.add(deserializeFilter(json, template));
+        /**
+         * Deserializes {@code filter} nodes. Filter nodes can either be a single node or a list of nodes.
+         */
+        private Set<ActionFilter<E>> deserializeFilters(ConfigurationNode node, ActionFilterTemplate template)
+                throws IOException, ObjectMappingException {
+            Map<Object, ? extends ConfigurationNode> map = node.getChildrenMap();
+            List<? extends ConfigurationNode> list = node.getChildrenList();
+
+            if (map.size() == 0 && list.size() == 0) {
+                throw new IOException("Invalid filter: " + node.getValue());
             }
-            return filters;
+
+            if (map.size() > 0) {
+                return Collections.singleton(deserializeFilter(map, template));
+            } else {
+                Set<ActionFilter<E>> filters = new HashSet<ActionFilter<E>>();
+                for (ConfigurationNode filterNode : list) {
+                    filters.add(deserializeFilter(filterNode.getChildrenMap(), template));
+                }
+                return filters;
+            }
         }
 
-        private ActionFilter<E> deserializeFilter(JsonElement json, ActionFilterTemplate template)
-                throws SpongeMatcherParseException {
+        /**
+         * Creates a single action filter from a map of filter options.
+         */
+        private ActionFilter<E> deserializeFilter(Map<Object, ? extends ConfigurationNode> map,
+                ActionFilterTemplate template) throws IOException {
             Map<ActionFilterOption<?, E>, SpongeMatcher<?>> optionMatchers =
                     new HashMap<ActionFilterOption<?, E>, SpongeMatcher<?>>();
-            JsonObject object = json.getAsJsonObject();
-            if (object.entrySet().size() == 0) {
-                throw new JsonParseException("Filters must be not empty");
-            }
 
-            for (Entry<String, JsonElement> entry : object.entrySet()) {
+            //Check if all filter options exist
+            for (Entry<Object, ? extends ConfigurationNode> entry : map.entrySet()) {
                 boolean validOption = template.getOptions().stream()
                         .map(o -> o.getName())
                         .anyMatch(s -> entry.getKey().equals(s));
                 if (!validOption) {
-                    throw new JsonParseException("Invalid filter option: " + entry.getKey());
+                    throw new IOException("Invalid filter option: " + entry.getKey());
                 }
             }
 
+            //Parse the matchers for all filter options
             for (ActionFilterOption<?, ?> option : template.getOptions()) {
                 @SuppressWarnings("unchecked")
                 ActionFilterOption<?, E> castOption = (ActionFilterOption<?, E>) option;
-                JsonElement optionElement = object.get(option.getName());
-                if (optionElement == null) {
+                ConfigurationNode optionNode = map.get(option.getName());
+                if (optionNode.getValue() == null) {
                     continue;
                 }
 
-                String matcherString = optionElement.getAsString();
-                StringElement matcherElement = StringElementParser.parseStringElement(matcherString);
-                SpongeMatcher<?> matcher = option.getType().parseMatcher(matcherElement);
-                optionMatchers.put(castOption, matcher);
+                String matcherString = optionNode.getString();
+                if (matcherString == null) {
+                    throw new IOException("Invalid filter option: " + optionNode.getValue());
+                }
+
+                try {
+                    StringElement matcherElement = StringElementParser.parseStringElement(matcherString);
+                    SpongeMatcher<?> matcher = option.getType().parseMatcher(matcherElement);
+                    optionMatchers.put(castOption, matcher);
+                } catch (SpongeMatcherParseException e) {
+                    throw new IOException("Invalid matcher: " + matcherString, e);
+                }
             }
             return new ActionFilter<E>(optionMatchers);
         }
