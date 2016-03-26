@@ -18,7 +18,6 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.EventListener;
-import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 
 import ninja.leaping.configurate.ConfigurationNode;
@@ -42,10 +41,7 @@ public abstract class ActionRule<E extends Event & Cancellable>
         Set<ActionRule<?>> handlers = new HashSet<ActionRule<?>>();
         handlers.add(new BlockPlaceRule());
         handlers.add(new BlockBreakRule());
-        handlers.add(new BlockInteractRule<InteractBlockEvent.Primary>("mineBlock",
-                InteractBlockEvent.Primary.class));
-        handlers.add(new BlockInteractRule<InteractBlockEvent.Secondary>("interactWithBlock",
-                InteractBlockEvent.Secondary.class));
+        handlers.add(new BlockInteractRule());
         handlers.add(new EntityInteractRule<InteractEntityEvent.Primary>("attackEntity",
                 InteractEntityEvent.Primary.class));
         handlers.add(new EntityInteractRule<InteractEntityEvent.Secondary>("interactWithEntity",

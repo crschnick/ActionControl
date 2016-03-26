@@ -11,14 +11,14 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
 
-public final class BlockInteractRule<E extends InteractBlockEvent> extends ActionRule<E> {
+public final class BlockInteractRule extends ActionRule<InteractBlockEvent.Secondary> {
 
-    public BlockInteractRule(String name, Class<E> eventClass) {
-        super(name, eventClass);
+    public BlockInteractRule() {
+        super("interactWithBlock", InteractBlockEvent.Secondary.class);
     }
 
     @Override
-    protected boolean acceptsEvent(E event) {
+    protected boolean acceptsEvent(InteractBlockEvent.Secondary event) {
         return true;
     }
 
