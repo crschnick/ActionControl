@@ -36,7 +36,7 @@ public final class ActionControl {
 
     @Inject
     @ConfigDir(sharedRoot = false)
-    private Path privateConfigDir;
+    private Path configDir;
 
     @Inject
     private Logger logger;
@@ -91,7 +91,7 @@ public final class ActionControl {
 
     private boolean loadConfigs() {
         try {
-            ConfigRegistry.getRegistry().loadConfigs(privateConfigDir);
+            ConfigRegistry.getRegistry().loadConfigs();
             logger.info("Successfully loaded the config files");
             return true;
         } catch (IOException e) {
@@ -103,5 +103,9 @@ public final class ActionControl {
 
     public Logger getLogger() {
         return logger;
+    }
+
+    public Path getConfigDirectory() {
+        return configDir;
     }
 }

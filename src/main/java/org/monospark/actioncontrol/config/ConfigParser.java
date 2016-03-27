@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
+import org.monospark.actioncontrol.ActionControl;
 import org.monospark.actioncontrol.rule.ActionRule;
 import org.monospark.actioncontrol.rule.ActionSettings;
 import org.monospark.spongematchers.matcher.SpongeMatcher;
@@ -30,7 +31,8 @@ public final class ConfigParser {
 
     private ConfigParser() {}
 
-    public static Set<Config> loadConfigs(Path path) throws IOException {
+    public static Set<Config> loadConfigs() throws IOException {
+        Path path = ActionControl.getInstance().getConfigDirectory();
         path.toFile().mkdir();
         Set<Config> configs = Sets.newHashSet();
         for (File file : path.toFile().listFiles()) {
@@ -47,7 +49,7 @@ public final class ConfigParser {
 
         if (configs.size() == 0) {
             createDefaultConfig(path.resolve("example.hocon"));
-            loadConfigs(path);
+            loadConfigs();
         }
 
         return configs;

@@ -1,7 +1,6 @@
 package org.monospark.actioncontrol.config;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,8 +19,8 @@ public final class ConfigRegistry {
 
     private ConfigRegistry() {}
 
-    public void loadConfigs(Path path) throws IOException {
-        allConfigs = ConfigParser.loadConfigs(path);
+    public void loadConfigs() throws IOException {
+        allConfigs = ConfigParser.loadConfigs();
     }
 
     public Set<Config> getConfigs(Player p) {
