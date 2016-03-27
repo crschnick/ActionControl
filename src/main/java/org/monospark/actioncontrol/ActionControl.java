@@ -28,12 +28,22 @@ import com.google.inject.Inject;
 @Plugin(id = "org.monospark.actioncontrol", name = "ActionControl", version = "1.0", description = "Description")
 public final class ActionControl {
 
+    private static ActionControl instance = null;
+
+    public static ActionControl getInstance() {
+        return instance;
+    }
+
     @Inject
     @ConfigDir(sharedRoot = false)
     private Path privateConfigDir;
 
     @Inject
     private Logger logger;
+
+    ActionControl() {
+        instance = this;
+    }
 
     @Listener
     public void onServerInit(GameInitializationEvent event) {
@@ -89,5 +99,9 @@ public final class ActionControl {
             logger.info("Fix the config and reload the plugin or restart the server to make it work again.");
             return false;
         }
+    }
+
+    public Logger getLogger() {
+        return logger;
     }
 }

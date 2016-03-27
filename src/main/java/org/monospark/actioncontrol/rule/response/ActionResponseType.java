@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.monospark.actioncontrol.ActionControl;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
@@ -89,7 +90,8 @@ public abstract class ActionResponseType {
                 return Optional.of(new ActionResponse() {
                     @Override
                     public <E extends Event & Cancellable> void execute(E event) {
-                        System.out.println(message);
+                        ActionControl.getInstance().getLogger().info(message.replace("<player>",
+                                event.getCause().first(Player.class).get().getName()));
                     }
                 });
             }
