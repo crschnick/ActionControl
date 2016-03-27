@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'org.monospark'
-version = '1.0'
+version = '1.0.1'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -31,7 +31,7 @@ shadowJar {
     classifier = ''
     
     from 'src/main/java/org/monospark/actioncontrol/config/example.hocon'
-    rename 'example.json', 'org/monospark/actioncontrol/config/example.hocon'
+    rename 'example.hocon', 'org/monospark/actioncontrol/config/example.hocon'
     
     from 'LICENSE.txt'
     rename 'LICENSE.txt', 'actioncontrol-license.txt'
