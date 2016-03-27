@@ -47,6 +47,7 @@ public final class ConfigParser {
 
         if (configs.size() == 0) {
             createDefaultConfig(path.resolve("example.hocon"));
+            loadConfigs(path);
         }
 
         return configs;
