@@ -1,12 +1,89 @@
-player-filter: "{'permissions': {'some.permission': true}}",
-action-rules: {
-    break-block: {
-        filter: {
-            block: "{'state': {'type': {'id': 'minecraft:log'}, 'traits': {'variant': 'birch'}}}",
-            tool: "{'type': 'minecraft:diamond_axe'}"
+# The following action rules apply for every player who doesn't have the some.permission permission
+player-filter = "!{'permissions': {'some.permission': true}}",
+action-rules {
+    break-block {
+        filter = [{
+            # Breaking birch wood with a diamond axe
+            block = "{'state': {'type': {'id': 'minecraft:log'}, 'traits': {'variant': 'birch'}}}",
+            tool = "{'type': 'minecraft:diamond_axe'}"
         },
+        {
+            # Breaking a gravity affected block (Every block except sand and gravel)
+            block = "{'state': {'type': {'properties': {'gravityAffected': true}}}}"
+        }],
         response: {
-            match: "deny"
+            match = "deny"
+        }
+    },
+
+    place-block {
+        filter {
+            # Placing wood planks
+            block = "{'state': {'type': {'id': 'minecraft:planks'}}}",
+        },
+        response {
+            match = [
+                "command(msg <player> Don't place that block!)",
+                "deny"
+            ]
+        }
+    },
+
+    interact-with-block {
+        filter {
+            # Pressing a stone button located at (1,1,1)
+            block = "{'state': {'type': {'id': 'minecraft:stone_button'}}, 'location': {'x': 1, 'y': 1, 'z': 1, 'world': {'name': 'world'}}}"
+        },
+        response {
+            match = [
+                "command(give <player> diamond_pickaxe)",
+                "player-command(say I just clicked the button!)"
+            ]
+        }
+    },
+
+    use-item {
+        filter {
+            # Eating cooked fish
+            item = "{'type': 'minecraft:cooked_fish'}"
+        },
+        response {
+            noMatch = [
+                "command(msg <player> you're only allowed to eat fish!)",
+                "deny"
+            ]
+        }
+    },
+
+    craft {
+        filter {
+            # Crafting spruce wood planks
+            result = "{'type': 'minecraft:planks', 'durability': 1, 'quantity': 4}"
+        },
+        response {
+            match = "deny"
+        }
+    },
+
+    attack-entity {
+        filter {
+            # Attacking a villager
+            entity = "{'type': 'Villager'}",
+            item = "*"
+        },
+        response {
+            match = "deny"
+        }
+    },
+
+    interact-with-entity {
+        filter {
+            # Shearing a sheep
+            entity = "{'type': 'Sheep'}",
+            item = "{'type': 'minecraft:shears'}"
+        },
+        response {
+            match = "deny"
         }
     }
 }
