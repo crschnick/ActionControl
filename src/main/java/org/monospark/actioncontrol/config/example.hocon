@@ -1,3 +1,5 @@
+# This is an example configuration. You can either use this as a template for your own configs or just delete this and create your own configs.
+
 # The following action rules apply for every player who doesn't have the some.permission permission
 player-filter = "!{'permissions': {'some.permission': true}}",
 action-rules {
@@ -68,7 +70,7 @@ action-rules {
     attack-entity {
         filter {
             # Attacking a villager
-            entity = "{'type': 'Villager'}",
+            entity = "{'type': 'minecraft:villager'}",
             item = "*"
         },
         response {
@@ -79,11 +81,14 @@ action-rules {
     interact-with-entity {
         filter {
             # Shearing a sheep
-            entity = "{'type': 'Sheep'}",
+            entity = "{'type': 'minecraft:sheep'}",
             item = "{'type': 'minecraft:shears'}"
         },
         response {
-            match = "deny"
+            match = [
+                "deny",
+                "log(<player> tried to shear a sheep!)"
+            ]
         }
     }
 }
