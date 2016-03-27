@@ -3,6 +3,7 @@ package org.monospark.actioncontrol.rule.impl;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.monospark.actioncontrol.rule.ActionRule;
 import org.monospark.actioncontrol.rule.filter.ActionFilterOption;
@@ -14,6 +15,7 @@ import org.spongepowered.api.event.item.inventory.ClickInventoryEvent.Primary;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent.Shift;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackComparators;
 import org.spongepowered.api.item.inventory.transaction.SlotTransaction;
 
 import com.google.common.collect.Maps;
@@ -33,7 +35,23 @@ public final class CraftRule extends ActionRule<ClickInventoryEvent> {
             if (event.getCursorTransaction().getFinal() == null) {
                 return false;
             }
-            return event.getTransactions().size() >= 2;
+
+            if (event.getTransactions().size() >= 2) {
+                //It is not possible to craft anymore items because
+                //at least one crafting ingredient got completely consumed.
+                return true;
+            } else if (event.getTransactions().size() >= 1) {
+                Set<ItemStack> consumedStacks = getConsumedItemStacks(event.getTransactions());
+
+                //An item stack was placed from the cursor into the inventory
+                if (consumedStacks.size() == 0) {
+                    return false;
+                }
+
+                ItemStack consumed = consumedStacks.iterator().next();
+                ItemStack created = event.getCursorTransaction().getFinal().createStack();
+                return !(ItemStackComparators.ALL.compare(consumed, created) == 0);
+            }
         } else if (event instanceof NumberPress) {
             //Ugly, but it's the only thing that works
             event.setCancelled(true);
@@ -47,15 +65,13 @@ public final class CraftRule extends ActionRule<ClickInventoryEvent> {
                 .addOption(new ActionFilterOption<ItemStack, ClickInventoryEvent>("result",
                         MatcherType.ITEM_STACK, e -> {
                             if (e instanceof Shift.Primary) {
-                                int quantity = getConsumedItemStacks(
-                                        e.getTransactions()).iterator().next().getQuantity();
-                                Entry<ItemStack, Integer> result = getCreatedItemStack(e.getTransactions());
+                                Set<ItemStack> consumed = getConsumedItemStacks(e.getTransactions());
+                                Entry<ItemStack, Integer> result = getResult(e.getTransactions());
+                                int ingredientsQuantity = getIngredientsQuantity(consumed, result.getKey());
                                 int resultQuantity = result.getValue();
-                                int craftedQuantity = resultQuantity / quantity;
-                                ItemStack craftedStack = ItemStack.builder()
-                                        .from(result.getKey())
-                                        .quantity(craftedQuantity)
-                                        .build();
+                                int craftedQuantity = resultQuantity / ingredientsQuantity;
+                                ItemStack craftedStack = createStackWithCustomQuantity(result.getKey(),
+                                        craftedQuantity);
                                 return craftedStack;
                             } else if (e instanceof Primary) {
                                 return e.getCursorTransaction().getFinal().createStack();
@@ -63,6 +79,16 @@ public final class CraftRule extends ActionRule<ClickInventoryEvent> {
                             throw new AssertionError();
                         }))
                 .build();
+    }
+
+    private int getIngredientsQuantity(Set<ItemStack> consumed, ItemStack result) {
+        Set<ItemStack> ingredients = consumed.stream()
+                .filter(s -> {
+                    ItemStack oneQuantity = createStackWithCustomQuantity(s, 1);
+                    return ItemStackComparators.ALL.compare(oneQuantity, result) != 0;
+                })
+                .collect(Collectors.toSet());
+        return ingredients.iterator().next().getQuantity();
     }
 
     private Set<ItemStack> getConsumedItemStacks(List<SlotTransaction> transactions) {
@@ -78,15 +104,12 @@ public final class CraftRule extends ActionRule<ClickInventoryEvent> {
             }
 
             int stackSize = transaction.getOriginal().getCount() - newCount;
-            consumed.add(ItemStack.builder()
-                    .from(transaction.getOriginal().createStack())
-                    .quantity(stackSize)
-                    .build());
+            consumed.add(createStackWithCustomQuantity(transaction.getOriginal().createStack(), stackSize));
         }
         return consumed;
     }
 
-    private Entry<ItemStack, Integer> getCreatedItemStack(List<SlotTransaction> transactions) {
+    private Entry<ItemStack, Integer> getResult(List<SlotTransaction> transactions) {
         ItemStack result = null;
         int created = 0;
         for (SlotTransaction transaction : transactions) {
@@ -96,19 +119,24 @@ public final class CraftRule extends ActionRule<ClickInventoryEvent> {
 
             int oldCount = transaction.getOriginal().getType() != ItemTypes.NONE
                     ? transaction.getOriginal().getCount() : 0;
-            int newCount = transaction.getFinal().getType() != ItemTypes.NONE ? transaction.getFinal().getCount() : 0;
+            int newCount = transaction.getFinal().getCount();
             if (newCount <= oldCount) {
                 continue;
             }
 
             if (result == null) {
-                result = ItemStack.builder()
-                        .from(transaction.getFinal().createStack())
-                        .quantity(1)
-                        .build();
+                result = createStackWithCustomQuantity(transaction.getFinal().createStack(), 1);
             }
             created += newCount - oldCount;
         }
         return Maps.immutableEntry(result, created);
+    }
+
+    private ItemStack createStackWithCustomQuantity(ItemStack stack, int quantity) {
+        return ItemStack.builder()
+                .from(stack)
+                .fromContainer(stack.toContainer())
+                .quantity(quantity)
+                .build();
     }
 }

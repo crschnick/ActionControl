@@ -32,7 +32,7 @@ public abstract class ActionResponseType {
 
         allTypes.add(new ActionResponseType() {
 
-            private Pattern pattern = Pattern.compile("command\\((?<command>.+)\\)");
+            private Pattern pattern = Pattern.compile("command\\s*\\((?<command>.+)\\)");
 
             @Override
             public Optional<ActionResponse> parse(String string) {
@@ -54,7 +54,7 @@ public abstract class ActionResponseType {
 
         allTypes.add(new ActionResponseType() {
 
-            private Pattern pattern = Pattern.compile("playerCommand\\((?<command>.+)\\)");
+            private Pattern pattern = Pattern.compile("player-command\\s*\\((?<command>.+)\\)");
 
             @Override
             public Optional<ActionResponse> parse(String string) {
@@ -76,7 +76,7 @@ public abstract class ActionResponseType {
 
         allTypes.add(new ActionResponseType() {
 
-            private Pattern pattern = Pattern.compile("log\\((?<message>.+)\\)");
+            private Pattern pattern = Pattern.compile("log\\s*\\((?<message>.+)\\)");
 
             @Override
             public Optional<ActionResponse> parse(String string) {

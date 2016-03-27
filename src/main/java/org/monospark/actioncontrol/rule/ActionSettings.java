@@ -161,7 +161,7 @@ public final class ActionSettings<E extends Event & Cancellable> {
                 @SuppressWarnings("unchecked")
                 ActionFilterOption<?, E> castOption = (ActionFilterOption<?, E>) option;
                 ConfigurationNode optionNode = map.get(option.getName());
-                if (optionNode.getValue() == null) {
+                if (optionNode == null) {
                     continue;
                 }
 
