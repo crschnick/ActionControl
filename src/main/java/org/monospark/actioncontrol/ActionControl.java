@@ -25,7 +25,10 @@ import org.spongepowered.api.text.format.TextColors;
 
 import com.google.inject.Inject;
 
-@Plugin(id = "org.monospark.actioncontrol", name = "ActionControl", version = "1.0", description = "Description")
+@Plugin(id = "org.monospark.actioncontrol",
+        name = "ActionControl",
+        version = "1.0.2",
+        description = "Control crafting, mining, combat and more!")
 public final class ActionControl {
 
     private static ActionControl instance = null;
