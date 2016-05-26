@@ -12,6 +12,7 @@ import org.monospark.spongematchers.type.MatcherType;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent.NumberPress;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent.Primary;
+import org.spongepowered.api.event.item.inventory.ClickInventoryEvent.Secondary;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent.Shift;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -29,9 +30,9 @@ public final class CraftRule extends ActionRule<ClickInventoryEvent> {
 
     @Override
     protected boolean acceptsEvent(ClickInventoryEvent event) {
-        if (event instanceof Shift.Primary) {
+        if (event instanceof Shift.Primary || event instanceof Shift.Secondary) {
             return getConsumedItemStacks(event.getTransactions()).size() > 1;
-        } else if (event instanceof Primary) {
+        } else if (event instanceof Primary || event instanceof Secondary) {
             if (event.getCursorTransaction().getFinal() == null) {
                 return false;
             }
@@ -64,7 +65,7 @@ public final class CraftRule extends ActionRule<ClickInventoryEvent> {
         return ActionFilterTemplate.builder()
                 .addOption(new ActionFilterOption<ItemStack, ClickInventoryEvent>("result",
                         MatcherType.ITEM_STACK, e -> {
-                            if (e instanceof Shift.Primary) {
+                            if (e instanceof Shift.Primary || e instanceof Shift.Secondary) {
                                 Set<ItemStack> consumed = getConsumedItemStacks(e.getTransactions());
                                 Entry<ItemStack, Integer> result = getResult(e.getTransactions());
                                 int ingredientsQuantity = getIngredientsQuantity(consumed, result.getKey());
@@ -73,7 +74,7 @@ public final class CraftRule extends ActionRule<ClickInventoryEvent> {
                                 ItemStack craftedStack = createStackWithCustomQuantity(result.getKey(),
                                         craftedQuantity);
                                 return craftedStack;
-                            } else if (e instanceof Primary) {
+                            } else if (e instanceof Primary || e instanceof Secondary) {
                                 return e.getCursorTransaction().getFinal().createStack();
                             }
                             throw new AssertionError();
