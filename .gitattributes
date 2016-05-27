@@ -1,1 +1,10 @@
 * text=auto
+
+*.bat text eol=crlf
+gradlew text eol=lf
+*.sh text eol=lf
+
+*.hocon text
+
+*.java text
+*.java diff=java
