@@ -27,7 +27,7 @@ import com.google.inject.Inject;
 
 @Plugin(id = "org.monospark.actioncontrol",
         name = "ActionControl",
-        version = "1.0.2",
+        version = "1.0.3",
         description = "Control crafting, mining, combat and more!")
 public final class ActionControl {
 
