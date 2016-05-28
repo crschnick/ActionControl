@@ -7,6 +7,7 @@ import org.monospark.actioncontrol.rule.filter.ActionFilterOption;
 import org.monospark.actioncontrol.rule.filter.ActionFilterTemplate;
 import org.monospark.spongematchers.type.MatcherType;
 import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -19,7 +20,7 @@ public final class BlockInteractRule extends ActionRule<InteractBlockEvent.Secon
 
     @Override
     protected boolean acceptsEvent(InteractBlockEvent.Secondary event) {
-        return true;
+        return event.getTargetBlock().getState().getType() != BlockTypes.AIR;
     }
 
     @Override
