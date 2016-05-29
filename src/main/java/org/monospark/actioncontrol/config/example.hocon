@@ -50,8 +50,8 @@ action-rules {
             item = "{'type': 'minecraft:cooked_fish'}"
         },
         response {
-            noMatch = [
-                "command(msg <player> you're only allowed to eat fish!)",
+            match = [
+                "command(msg <player> you're not allowed to eat cooked fish!)",
                 "deny"
             ]
         }
