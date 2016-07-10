@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'org.monospark'
-version = '1.0.5'
+version = '1.0.6'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-	compile 'org.spongepowered:spongeapi:4.0.3'
+	compile 'org.spongepowered:spongeapi:4.1.0'
     compile 'org.monospark:spongematchers:1.1'
     testCompile 'junit:junit:4.11'
 }

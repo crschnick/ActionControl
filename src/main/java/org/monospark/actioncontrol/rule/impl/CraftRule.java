@@ -10,6 +10,7 @@ import org.monospark.actioncontrol.rule.filter.ActionFilterOption;
 import org.monospark.actioncontrol.rule.filter.ActionFilterTemplate;
 import org.monospark.spongematchers.type.MatcherType;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
+import org.spongepowered.api.event.item.inventory.ClickInventoryEvent.Drop;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent.NumberPress;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent.Primary;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent.Secondary;
@@ -53,7 +54,7 @@ public final class CraftRule extends ActionRule<ClickInventoryEvent> {
                 ItemStack created = event.getCursorTransaction().getFinal().createStack();
                 return !(ItemStackComparators.ALL.compare(consumed, created) == 0);
             }
-        } else if (event instanceof NumberPress) {
+        } else if (event instanceof NumberPress || event instanceof Drop.Single || event instanceof Drop.Full) {
             //Ugly, but it's the only thing that works
             event.setCancelled(true);
         }
