@@ -54,7 +54,7 @@ public final class CraftRule extends ActionRule<ClickInventoryEvent> {
                 ItemStack created = event.getCursorTransaction().getFinal().createStack();
                 return !(ItemStackComparators.ALL.compare(consumed, created) == 0);
             }
-        } else if (event instanceof NumberPress || event instanceof Drop.Single || event instanceof Drop.Full) {
+        } else if (event instanceof NumberPress || event instanceof Drop.Single) {
             //Ugly, but it's the only thing that works
             event.setCancelled(true);
         }
