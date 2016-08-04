@@ -43,6 +43,18 @@ action-rules {
             ]
         }
     },
+    
+    interact {
+        filter {
+            item = "{'type': 'minecraft:egg'}"
+        },
+        response {
+            match = [
+                "command(msg <player> Don't throw eggs!)",
+                "deny"
+            ]
+        }
+    },
 
     use-item {
         filter {

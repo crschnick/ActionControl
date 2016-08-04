@@ -8,6 +8,7 @@ import java.util.Set;
 import org.monospark.actioncontrol.config.Config;
 import org.monospark.actioncontrol.config.ConfigRegistry;
 import org.monospark.actioncontrol.rule.filter.ActionFilterTemplate;
+import org.monospark.actioncontrol.rule.impl.ItemInteractRule;
 import org.monospark.actioncontrol.rule.impl.BlockBreakRule;
 import org.monospark.actioncontrol.rule.impl.BlockInteractRule;
 import org.monospark.actioncontrol.rule.impl.BlockPlaceRule;
@@ -42,6 +43,7 @@ public abstract class ActionRule<E extends Event & Cancellable>
         handlers.add(new BlockPlaceRule());
         handlers.add(new BlockBreakRule());
         handlers.add(new BlockInteractRule());
+        handlers.add(new ItemInteractRule());
         handlers.add(new EntityInteractRule<InteractEntityEvent.Primary>("attack-entity",
                 InteractEntityEvent.Primary.class));
         handlers.add(new EntityInteractRule<InteractEntityEvent.Secondary>("interact-with-entity",
